@@ -8,11 +8,13 @@ import exit from "../asstes/dashboard/exit.png"
 import actions from "../asstes/dashboard/actions.png"
 import arrow from "../asstes/dashboard/arrow.png"
 
+import client from "../asstes/dashboard/client.png"
+
 import { getDatabase, ref, set, push, get } from "firebase/database";
 
 
 
-function TransporterPage({ updateView ,setUpdateView, setSelectedTranspDetail, setShowTranspDetails, setShowNewTransoprterOverlay, setChoiceTransoporter, setShowTransporterInfos, anime, selectOrderTransoprter, setSelectTranspOverlay, showTransporterInfos, setShowOrdersOverlay }) {
+function ClientPage({ setShowClinetDetails,setSelectedClientDetail, setChoiceTransoporter, anime,  }) {
 
 
     const [selectedStateFilter, setSelectedStateFilter] = useState(0);
@@ -36,6 +38,10 @@ function TransporterPage({ updateView ,setUpdateView, setSelectedTranspDetail, s
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [selectedOrderToUpdate, setSelectedOrderToUpdate] = useState(null);
     const [showSelectOption2, setShowSelect2] = useState(false);
+
+    
+    const [allClient, setAllClient] = useState([]);
+    const [filterClinet, setFilterClinet] = useState([]);
 
 
     function compare(a, b) {
@@ -134,22 +140,18 @@ function TransporterPage({ updateView ,setUpdateView, setSelectedTranspDetail, s
             }
         } else {
             if (list === "clients") {
-
+                console.log("sorting clients")
+                if(filterClinet.length == 0){
+                    res = allClient;
+                    res.sort(compareName)
+                    setAllClient(res);
+                }else{
+                    res = filterClinet;
+                    res.sort(compareName)
+                    setFilterClinet(res);
+                }
             } else {
-                
 
-            if(filteTransporters.length == 0){
-                
-            console.log("sort transps")
-                res = allTransporters;
-                res.sort(compareName);
-                setFilterTransporters(res)
-            }else{
-
-                res = filteTransporters;
-                res.sort(compareName);
-                setFilterTransporters(res)
-            }
             }
         }
 
@@ -236,7 +238,7 @@ function TransporterPage({ updateView ,setUpdateView, setSelectedTranspDetail, s
                 var transps = [];
                 list.forEach(element => {
                     console.log("agent exsist")
-                    transps.push({ id: element[0], name: element[1].name, city: element[1].city, location: element[1].location, email: element[1].email, payment_method: element[1].payment_method, phone: element[1].phone, state: element[1].status, vehicle_type: element[1].vehicle, date: "12/12/2023" ,  })
+                    transps.push({ id: element[0], name: element[1].name, city: element[1].city, location: element[1].location, email: element[1].email, payment_method: element[1].payment_method, phone: element[1].phone, state: element[1].status, vehicle_type: element[1].vehicle, date: "12/12/2023" })
                     console.log(element[1].name)
 
                 });
@@ -251,14 +253,12 @@ function TransporterPage({ updateView ,setUpdateView, setSelectedTranspDetail, s
     const filterByStatus = (filter) => {
 
         var filterRes = [];
-        if (filter === "a") {
+        if (filter == "a") {
             setFilterTransporters(allTransporters);
         } else {
 
-            
             allTransporters.map((item) => {
-                console.log(item.state)
-                if (item.state == filter) {
+                if (item.state === filter) {
                     filterRes.push(item);
                 }
             })
@@ -267,16 +267,39 @@ function TransporterPage({ updateView ,setUpdateView, setSelectedTranspDetail, s
         }
     }
 
-    useEffect(()=> {
-        setUpdateView(false);
-        getAllTransporter();
+    
+    const getAllClient = () => {
 
-    },[updateView])
+        const db = getDatabase();
+        const shipments = ref(db, 'Client');
+
+        get(shipments)
+            .then((snapshot) => {
+                const data = snapshot.val();
+                const list = Object.entries(data)
+                var clients = [];
+                var index = 1;
+                list.forEach(element => {
+                    console.log("client exsist")
+                    
+                    console.log(element)
+                    clients.push({ id: element[0], name: element[1].name, email: element[1].email, business_nature: element[1].business_nature, company_name: element[1].company_name, location: element[1].location, signup_date: element[1].signup_date, phone: element[1].tel_number, status: element[1].status })
+                    index++;
+
+                });
+
+                setAllClient(clients)
+            })
+    }
+
+
+
 
     useEffect(() => {
 
-        getAllOrders();
-        getAllTransporter();
+        console.log("clientpage.....")
+        getAllClient()    
+        
 
 
         window.addEventListener('click', function (e) {
@@ -301,60 +324,63 @@ function TransporterPage({ updateView ,setUpdateView, setSelectedTranspDetail, s
     }, [])
 
     return (
-        <motion.div className="dashboard-orders tranporters-page" id="page3"
-            initial={{ opacity: 0 }}
-            animate={anime ? { opacity: 1,zIndex:3 } : { opacity: 0,zIndex:0 }}
+        
+        <motion.div className="dashboard-orders client-page" id="page4"
+        initial={{ opacity: 0 }}
+        animate={anime ? { opacity: 1,zIndex:3 } : { opacity: 0 ,zIndex:0}}
+    >
 
-        >
-            <div className="tranporters-page-content">
+        <div className="client-page-content">
+            <div className="clients-left">
                 <div className="dash-page-title">
                     <p>Korsaa</p>
-                    <p>My Transporter</p>
+                    <p>My Clients</p>
                 </div>
+
 
                 <div className="orders-filters">
 
-                    <div onClick={() => {
-                        setSelectedStateFilter(0);
-                        filterByStatus("a");
-                    }}>
-                        <p>All</p>
-                        <motion.div
-                            className="selected-order-filter"
-                            initial={{ width: "100%" }}
-                            animate={selectedStateFilter == 0 ? { width: "100%" } : { width: 0 }}
-                        >
+                <div onClick={() => {
+                    setSelectedStateFilter(0);
+                    filterByStatus("a");
+                }}>
+                    <p>All</p>
+                    <motion.div
+                        className="selected-order-filter"
+                        initial={{ width: "0%" }}
+                        animate={selectedStateFilter == 0 ? { width: "100%" } : { width: 0 }}
+                    >
 
-                        </motion.div>
-                    </div>
+                    </motion.div>
+                </div>
 
-                    <div onClick={() => {
-                        setSelectedStateFilter(1);
-                        filterByStatus(true);
-                    }}>
-                        <p>Actif</p>
-                        <motion.div
-                            className="selected-order-filter"
-                            initial={{ width: "100%" }}
-                            animate={selectedStateFilter == 1 ? { width: "100%" } : { width: 0 }}
-                        >
+                <div onClick={() => {
+                    setSelectedStateFilter(1);
+                    filterByStatus(false);
+                }}>
+                    <p>Actif</p>
+                    <motion.div
+                        className="selected-order-filter"
+                        initial={{ width: "0%" }}
+                        animate={selectedStateFilter == 1 ? { width: "100%" } : { width: 0 }}
+                    >
 
-                        </motion.div>
-                    </div>
+                    </motion.div>
+                </div>
 
-                    <div onClick={() => {
-                        setSelectedStateFilter(2);
-                        filterByStatus(false);
-                    }}>
-                        <p>Inactif</p>
-                        <motion.div
-                            className="selected-order-filter"
-                            initial={{ width: "100%" }}
-                            animate={selectedStateFilter == 2 ? { width: "100%" } : { width: 0 }}
-                        >
+                <div onClick={() => {
+                    setSelectedStateFilter(2);
+                    filterByStatus(true);
+                }}>
+                    <p>Inactif</p>
+                    <motion.div
+                        className="selected-order-filter"
+                        initial={{ width: "0%" }}
+                        animate={selectedStateFilter == 2 ? { width: "100%" } : { width: 0 }}
+                    >
 
-                        </motion.div>
-                    </div>
+                    </motion.div>
+                </div>
 
                 </div>
 
@@ -399,14 +425,14 @@ function TransporterPage({ updateView ,setUpdateView, setSelectedTranspDetail, s
                                     animate={!selectedField[0] ? { opacity: 1 } : { opacity: 0 }}
                                 >
                                     show
-                                            </motion.p>
+                            </motion.p>
 
                                 <motion.p
                                     className="select-text-action"
                                     animate={selectedField[0] ? { opacity: 1 } : { opacity: 0 }}
                                 >
                                     hide
-                                            </motion.p>
+                            </motion.p>
                             </div>
                             <div className="filter-options"
 
@@ -425,20 +451,20 @@ function TransporterPage({ updateView ,setUpdateView, setSelectedTranspDetail, s
 
                                 }}
                             >
-                                <p>Name</p>
+                                <p>client</p>
                                 <motion.p
                                     className="select-text-action"
                                     animate={!selectedField[1] ? { opacity: 1 } : { opacity: 0 }}
                                 >
                                     show
-                                            </motion.p>
+                            </motion.p>
 
                                 <motion.p
                                     className="select-text-action"
                                     animate={selectedField[1] ? { opacity: 1 } : { opacity: 0 }}
                                 >
                                     hide
-                                            </motion.p>
+                            </motion.p>
                             </div>
                             <div className="filter-options"
                                 onClick={() => {
@@ -457,20 +483,20 @@ function TransporterPage({ updateView ,setUpdateView, setSelectedTranspDetail, s
 
                                 }}
                             >
-                                <p>Company Name</p>
+                                <p>Date</p>
                                 <motion.p
                                     className="select-text-action"
                                     animate={!selectedField[2] ? { opacity: 1 } : { opacity: 0 }}
                                 >
                                     show
-                                            </motion.p>
+                            </motion.p>
 
                                 <motion.p
                                     className="select-text-action"
                                     animate={selectedField[2] ? { opacity: 1 } : { opacity: 0 }}
                                 >
                                     hide
-                                            </motion.p>
+                            </motion.p>
                             </div>
                             <div className="filter-options"
                                 onClick={() => {
@@ -489,20 +515,20 @@ function TransporterPage({ updateView ,setUpdateView, setSelectedTranspDetail, s
 
                                 }}
                             >
-                                <p>City</p>
+                                <p>From</p>
                                 <motion.p
                                     className="select-text-action"
                                     animate={!selectedField[3] ? { opacity: 1 } : { opacity: 0 }}
                                 >
                                     show
-                                            </motion.p>
+                            </motion.p>
 
                                 <motion.p
                                     className="select-text-action"
                                     animate={selectedField[3] ? { opacity: 1 } : { opacity: 0 }}
                                 >
                                     hide
-                                            </motion.p>
+                            </motion.p>
                             </div>
                             <div className="filter-options"
                                 onClick={() => {
@@ -521,20 +547,20 @@ function TransporterPage({ updateView ,setUpdateView, setSelectedTranspDetail, s
 
                                 }}
                             >
-                                <p>Business Nature</p>
+                                <p>To</p>
                                 <motion.p
                                     className="select-text-action"
                                     animate={!selectedField[4] ? { opacity: 1 } : { opacity: 0 }}
                                 >
                                     show
-                                            </motion.p>
+                            </motion.p>
 
                                 <motion.p
                                     className="select-text-action"
                                     animate={selectedField[4] ? { opacity: 1 } : { opacity: 0 }}
                                 >
                                     hide
-                                            </motion.p>
+                            </motion.p>
                             </div>
                             <div className="filter-options"
                                 onClick={() => {
@@ -559,14 +585,14 @@ function TransporterPage({ updateView ,setUpdateView, setSelectedTranspDetail, s
                                     animate={!selectedField[5] ? { opacity: 1 } : { opacity: 0 }}
                                 >
                                     show
-                                            </motion.p>
+                            </motion.p>
 
                                 <motion.p
                                     className="select-text-action"
                                     animate={selectedField[5] ? { opacity: 1 } : { opacity: 0 }}
                                 >
                                     hide
-                                            </motion.p>
+                            </motion.p>
                             </div>
                             <div className="filter-options"
                                 onClick={() => {
@@ -591,14 +617,14 @@ function TransporterPage({ updateView ,setUpdateView, setSelectedTranspDetail, s
                                     animate={!selectedField[6] ? { opacity: 1 } : { opacity: 0 }}
                                 >
                                     show
-                                            </motion.p>
+                            </motion.p>
 
                                 <motion.p
                                     className="select-text-action"
                                     animate={selectedField[6] ? { opacity: 1 } : { opacity: 0 }}
                                 >
                                     hide
-                                            </motion.p>
+                            </motion.p>
                             </div>
 
                             <div className="filter-options"
@@ -625,14 +651,14 @@ function TransporterPage({ updateView ,setUpdateView, setSelectedTranspDetail, s
                                     animate={!selectedField[7] ? { opacity: 1 } : { opacity: 0 }}
                                 >
                                     show
-                                            </motion.p>
+                            </motion.p>
 
                                 <motion.p
                                     className="select-text-action"
                                     animate={selectedField[7] ? { opacity: 1 } : { opacity: 0 }}
                                 >
                                     hide
-                                            </motion.p>
+                            </motion.p>
                             </div>
                         </motion.div>
                     </div>
@@ -666,8 +692,8 @@ function TransporterPage({ updateView ,setUpdateView, setSelectedTranspDetail, s
                             <div className="filter-options"
                                 onClick={() => {
 
-                                    sortBy("transp" , "name")
-                                    console.log("sort")
+                                    sortBy("clients" , "name")
+                                    
                                 }}
                             >
                                 <p>Client Name</p>
@@ -676,18 +702,9 @@ function TransporterPage({ updateView ,setUpdateView, setSelectedTranspDetail, s
                         </motion.div>
                     </div>
 
-
-                    <div className="add-tranporter filer-components"
-                        onClick={() => {
-                            setShowNewTransoprterOverlay(true);
-                        }}
-                    >
-                        <p>New Transoprter</p>
-                    </div>
-
                 </div>
 
-                <div className="transporter-list">
+                <div className="orders-list clients-list">
                     <motion.div className="order-list-item">
                         <motion.p
                             initial={{ opacity: 1 }}
@@ -697,42 +714,38 @@ function TransporterPage({ updateView ,setUpdateView, setSelectedTranspDetail, s
                             initial={{ opacity: 1 }}
                             animate={selectedField[1] ? { opacity: 1 } : { display: "none", opacity: 0 }}
 
-                        >Name</motion.p>
+                        >Client</motion.p>
                         <motion.p
                             initial={{ opacity: 1 }}
                             animate={selectedField[2] ? { opacity: 1 } : { display: "none", opacity: 0 }}
 
                         >Phone</motion.p>
-                        <motion.p
-                            initial={{ opacity: 1 }}
-                            animate={selectedField[3] ? { opacity: 1 } : { display: "none", opacity: 0 }}
-
-                        >City</motion.p>
+                        
                         <motion.p
                             initial={{ opacity: 1 }}
                             animate={selectedField[4] ? { opacity: 1 } : { display: "none", opacity: 0 }}
 
-                        >Vehicle</motion.p>
+                        >Company</motion.p>
                         <motion.p
                             initial={{ opacity: 1 }}
                             animate={selectedField[5] ? { opacity: 1 } : { display: "none", opacity: 0 }}
 
-                        >Payment</motion.p>
+                        >Business Nature</motion.p>
                         <motion.p
                             initial={{ opacity: 1 }}
                             animate={selectedField[6] ? { opacity: 1 } : { display: "none", opacity: 0 }}
 
-                        >SignUp Date</motion.p>
+                        >location</motion.p>
 
                         <motion.p
                             initial={{ opacity: 1 }}
                             animate={selectedField[7] ? { opacity: 1 } : { display: "none", opacity: 0 }}
 
-                        >Status</motion.p>
+                        >State</motion.p>
                     </motion.div>
                     {
-                        filteTransporters.length == 0 ?
-                            allTransporters.map((item, index) => {
+                        filterClinet.length == 0 ?
+                            allClient.map((item , index) => {
                                 return (
                                     <div>
                                         <div className="order-list-item">
@@ -750,32 +763,28 @@ function TransporterPage({ updateView ,setUpdateView, setSelectedTranspDetail, s
                                                 animate={selectedField[2] ? { opacity: 1 } : { display: "none", opacity: 0 }}
 
                                             >{item.phone}</motion.p>
-                                            <motion.p
-                                                initial={{ opacity: 1 }}
-                                                animate={selectedField[3] ? { opacity: 1 } : { display: "none", opacity: 0 }}
-
-                                            >{item.city}</motion.p>
+                                            
                                             <motion.p
                                                 initial={{ opacity: 1 }}
                                                 animate={selectedField[4] ? { opacity: 1 } : { display: "none", opacity: 0 }}
 
-                                            >{item.vehicle_type}</motion.p>
+                                            >{item.company_name}</motion.p>
                                             <motion.p
                                                 initial={{ opacity: 1 }}
                                                 animate={selectedField[5] ? { opacity: 1 } : { display: "none", opacity: 0 }}
 
-                                            >{item.payment_method}</motion.p>
+                                            >{item.business_nature}</motion.p>
                                             <motion.p
                                                 initial={{ opacity: 1 }}
                                                 animate={selectedField[6] ? { opacity: 1 } : { display: "none", opacity: 0 }}
 
-                                            >{item.date}</motion.p>
+                                            >{item.location} DA</motion.p>
                                             <motion.p className="state-container"
                                                 initial={{ opacity: 1 }}
                                                 animate={selectedField[7] ? { opacity: 1 } : { display: "none", opacity: 0 }}
                                             >
                                                 <div className={!item.state ? "stat-circle bkYellow" : "stat-circle bkBlue"} >
-                                                    {item.state ? <p>On</p> : <p>Off</p>}
+                                                    {item.state  ? <p>On</p> : <p>Off</p>}
                                                 </div>
                                             </motion.p>
                                             <div className="action"
@@ -789,24 +798,22 @@ function TransporterPage({ updateView ,setUpdateView, setSelectedTranspDetail, s
 
                                         <motion.div className="order-list-item order-actions-container"
                                             initial={{ height: "0", opacity: 0 }}
-                                            animate={showOrderAction == index ? { height: "60px", opacity: 1, transition: { delay: 0 } } : { height: "0", opacity: 0, transition: { delay: 0 } }}
+                                            animate={showOrderAction == index? { height: "60px", opacity: 1, transition: { delay: 0 } } : { height: "0", opacity: 0, transition: { delay: 0 } }}
                                         >
 
                                             <motion.div className="order-action bkBlue"
                                                 initial={{ opacity: 0 }}
-                                                animate={showOrderAction == index ? { opacity: 1 } : { opacity: 0 }}
-                                                onClick={() => {
+                                                animate={showOrderAction == index? { opacity: 1 } : { opacity: 0 }}
 
-                                                }}
                                             >
                                                 <p>Select Transporter</p>
                                             </motion.div>
                                             <motion.div className="order-action bkRed"
                                                 initial={{ opacity: 0 }}
-                                                animate={showOrderAction == index ? { opacity: 1 } : { opacity: 0 }}
+                                                animate={showOrderAction == index? { opacity: 1 } : { opacity: 0 }}
                                                 onClick={() => {
-                                                    setSelectedTranspDetail(item);
-                                                    setShowTranspDetails(true)
+                                                    setSelectedClientDetail(item)
+                                                    setShowClinetDetails(true);
                                                 }}
 
                                             >
@@ -814,9 +821,9 @@ function TransporterPage({ updateView ,setUpdateView, setSelectedTranspDetail, s
                                             </motion.div>
                                             <motion.div className="order-action bkYellow"
                                                 initial={{ opacity: 0 }}
-                                                animate={showOrderAction == index ? { opacity: 1 } : { opacity: 0 }}
+                                                animate={showOrderAction == index? { opacity: 1 } : { opacity: 0 }}
                                             >
-                                                <p>Remove</p>
+                                                <p>Cancel</p>
                                             </motion.div>
                                         </motion.div>
                                     </div>
@@ -826,7 +833,7 @@ function TransporterPage({ updateView ,setUpdateView, setSelectedTranspDetail, s
 
                             :
 
-                            filteTransporters.map((item, index) => {
+                            filterClinet.map((item , index) => {
                                 return (
                                     <div>
                                         <div className="order-list-item">
@@ -844,32 +851,28 @@ function TransporterPage({ updateView ,setUpdateView, setSelectedTranspDetail, s
                                                 animate={selectedField[2] ? { opacity: 1 } : { display: "none", opacity: 0 }}
 
                                             >{item.phone}</motion.p>
-                                            <motion.p
-                                                initial={{ opacity: 1 }}
-                                                animate={selectedField[3] ? { opacity: 1 } : { display: "none", opacity: 0 }}
-
-                                            >{item.city}</motion.p>
+                                            
                                             <motion.p
                                                 initial={{ opacity: 1 }}
                                                 animate={selectedField[4] ? { opacity: 1 } : { display: "none", opacity: 0 }}
 
-                                            >{item.vehicle_type}</motion.p>
+                                            >{item.company_name}</motion.p>
                                             <motion.p
                                                 initial={{ opacity: 1 }}
                                                 animate={selectedField[5] ? { opacity: 1 } : { display: "none", opacity: 0 }}
 
-                                            >{item.payment_method}</motion.p>
+                                            >{item.business_nature}</motion.p>
                                             <motion.p
                                                 initial={{ opacity: 1 }}
                                                 animate={selectedField[6] ? { opacity: 1 } : { display: "none", opacity: 0 }}
 
-                                            >{item.date}</motion.p>
+                                            >{item.location} DA</motion.p>
                                             <motion.p className="state-container"
                                                 initial={{ opacity: 1 }}
                                                 animate={selectedField[7] ? { opacity: 1 } : { display: "none", opacity: 0 }}
                                             >
                                                 <div className={!item.state ? "stat-circle bkYellow" : "stat-circle bkBlue"} >
-                                                    {item.state ? <p>On</p> : <p>Off</p>}
+                                                    {item.state  ? <p>On</p> : <p>Off</p>}
                                                 </div>
                                             </motion.p>
                                             <div className="action"
@@ -883,15 +886,13 @@ function TransporterPage({ updateView ,setUpdateView, setSelectedTranspDetail, s
 
                                         <motion.div className="order-list-item order-actions-container"
                                             initial={{ height: "0", opacity: 0 }}
-                                            animate={showOrderAction == index ? { height: "60px", opacity: 1, transition: { delay: 0 } } : { height: "0", opacity: 0, transition: { delay: 0 } }}
+                                            animate={showOrderAction  == index? { height: "60px", opacity: 1, transition: { delay: 0 } } : { height: "0", opacity: 0, transition: { delay: 0 } }}
                                         >
 
                                             <motion.div className="order-action bkBlue"
                                                 initial={{ opacity: 0 }}
                                                 animate={showOrderAction == index ? { opacity: 1 } : { opacity: 0 }}
-                                                onClick={() => {
 
-                                                }}
                                             >
                                                 <p>Select Transporter</p>
                                             </motion.div>
@@ -899,8 +900,9 @@ function TransporterPage({ updateView ,setUpdateView, setSelectedTranspDetail, s
                                                 initial={{ opacity: 0 }}
                                                 animate={showOrderAction == index ? { opacity: 1 } : { opacity: 0 }}
                                                 onClick={() => {
-                                                    setSelectedTranspDetail(item);
-                                                    setShowTranspDetails(true)
+                                                    
+                                                    setSelectedClientDetail(item)
+                                                    setShowClinetDetails(true);
                                                 }}
 
                                             >
@@ -924,9 +926,83 @@ function TransporterPage({ updateView ,setUpdateView, setSelectedTranspDetail, s
 
                 </div>
             </div>
-        </motion.div>
+            
+
+            <div className="clients-right">
+                <p>Clients Stat</p>
+                <div className="client-stat-item">
+                    
+                    <div className="client-stat-item-left">
+                        <div className="client-stat-item-img">
+                            <img src={client} alt="" />
+                        </div>
+                        <p>Client Count</p>
+                        
+                    </div>
+
+                    <p>354 <span>(C)</span></p>
+                </div>
+
+                <div className="client-stat-item">
+
+                    <div className="client-stat-item-left">
+                        <div className="client-stat-item-img">
+                            <img src={client} alt="" />
+                        </div>
+                        <p>Actif Client</p>
+
+                    </div>
+
+                    <p>354 <span>(C)</span></p>
+                </div>
+
+                <div className="client-stat-item">
+
+                    <div className="client-stat-item-left">
+                        <div className="client-stat-item-img">
+                            <img src={client} alt="" />
+                        </div>
+                        <p>Inactif Count</p>
+
+                    </div>
+
+                    <p>354 <span>(C)</span></p>
+                </div>
+
+                <div className="client-stat-item">
+
+                    <div className="client-stat-item-left">
+                        <div className="client-stat-item-img">
+                            <img src={client} alt="" />
+                        </div>
+                        <p>Best Client</p>
+
+                    </div>
+
+                    <p>354 <span>(C)</span></p>
+                </div>
+
+                <div className="client-stat-item">
+
+
+                    <img src={client} alt="" />
+                    <div className="circler-stat">
+                        <p>354 <span>(C)</span></p>
+                    </div>
+                    <p>Client Count</p>
+
+                    <div className="action-btn">
+                        <p>More Info</p>
+                    </div>
+
+                    <div className="colored-back"></div>
+                </div>
+            </div>
+        </div>
+        
+    </motion.div>
     )
 }
 
 
-export default TransporterPage;
+export default ClientPage;

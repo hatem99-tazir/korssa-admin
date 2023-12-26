@@ -81,7 +81,7 @@
     text-align: start;
 }
 
-input {
+input , select{
     width: calc(100% - 30px);
     height: 50px;
     border-radius: 5px;
@@ -89,6 +89,10 @@ input {
     margin-top: 10px;
     font-weight: bold;
     padding-left: 30px;
+}
+
+select {
+    width: 100% !important;
 }
 
 .action-group {

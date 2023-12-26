@@ -10,7 +10,7 @@ import { getDatabase, ref, set, push, get, update } from "firebase/database";
 
 
 
-function ClientDetails({ client, visible, close }) {
+function ClientDetails({ client, visible, close , setShowOrdersOverlay , setSelectedOrder}) {
 
 
     
@@ -123,6 +123,7 @@ function ClientDetails({ client, visible, close }) {
                     <div className="transp-details-header">
                         <p>Korssa Transoprter</p>
                         <p>{client.name}</p>
+                        <p>{client.email}</p>
                     </div>
 
                     <p>Transoprter Orders</p>
@@ -181,6 +182,15 @@ function ClientDetails({ client, visible, close }) {
                                             <p>{item.price}</p>
                                         </div>
 
+                                        <div className="more-info-detail"
+                                            onClick={()=> {
+                                                
+                                                setShowOrdersOverlay(true);
+                                                setSelectedOrder(item);
+                                            }}
+                                        >
+                                            <img src={exit}/>
+                                        </div>
 
 
 

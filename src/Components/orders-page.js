@@ -9,11 +9,17 @@ import exit from "../asstes/dashboard/exit.png"
 import actions from "../asstes/dashboard/actions.png"
 import arrow from "../asstes/dashboard/arrow.png"
 
+import { useStateWithCallbackLazy } from 'use-state-with-callback';
+
 import { getDatabase, ref, set, push, get } from "firebase/database";
 
 
 
-function OrderPage({ choiceTransoporter, setChoiceTransoporter, setShowTransporterInfos , anime, selectOrderTransoprter, setSelectTranspOverlay, showTransporterInfos, setShowOrdersOverlay  }) {
+import DatePicker from "react-datepicker";
+
+
+
+function OrderPage({setShowDelivredOverlay , setShowTranspDetails , showTranspDetails,  setSelectedTranspDetail , selectedTranspDetail , updateOrderView , setUpdateOrderView, setShowCancelDetailOverlay ,choiceTransoporter, setChoiceTransoporter, setShowTransporterInfos , anime, selectOrderTransoprter, setSelectTranspOverlay, showTransporterInfos, setShowOrdersOverlay,setSelectedOrder  }) {
 
 
     const [selectedStateFilter, setSelectedStateFilter] = useState(0);
@@ -22,7 +28,7 @@ function OrderPage({ choiceTransoporter, setChoiceTransoporter, setShowTransport
     const initSelected = [true, true, true, true, true, true, true, true];
     const [selectedField, setSelectedField] = useState(initSelected);
 
-    const [presAllOrders, setPresAllOrders] = useState([]);
+    const [presAllOrders, setPresAllOrders] = useStateWithCallbackLazy([]);
 
 
     const [allOrders, setAllOrders] = useState([]);
@@ -32,12 +38,17 @@ function OrderPage({ choiceTransoporter, setChoiceTransoporter, setShowTransport
     const [filteTransporters, setFilterTransporters] = useState([]);
 
 
-    const [selectedDateAnim, setSelectedDateAnim] = useState(6);
+    const [selectedDateAnim, setSelectedDateAnim] = useState(0);
     const [showOrderAction, setShowOrderAction] = useState(-1);
-    const [selectedOrder, setSelectedOrder] = useState(null);
     const [selectedOrderToUpdate, setSelectedOrderToUpdate] = useState(null);
     const [showSelectOption2, setShowSelect2] = useState(false);
 
+    
+
+    const [calandarDate, setCalandarDate] = useState(new Date());
+
+    const [rechTransp, setRechTransp] = useState("");
+    
 
     function compare(a, b) {
         if (a.price < b.price) {
@@ -95,20 +106,45 @@ function OrderPage({ choiceTransoporter, setChoiceTransoporter, setShowTransport
         setChoiceTransoporter(res);
     }
 
-    const getOrdersByDate = (date) => {
+    const updateTranspRech = ()=> {
+
+        var res = []
+        if(rechTransp === ""){
+            
+            setChoiceTransoporter([]);
+
+        }else{
+            allTransporters.map((item) => {
+                if (item.name.includes(rechTransp)) {
+                    res.push(item)
+                }
+            })
+    
+            
+            setChoiceTransoporter(res);
+        }
+    }
+
+    const getOrdersByDate = async (date) => {
         //must change : store all orders in a var
 
-        console.log("getOrdersByDate.....")
-        console.log(date)
+        console.log("getOrdersByDate..........................................")
+       
         var res = [];
+        
         presAllOrders.map((item) => {
             console.log(item)
             if (item.date === date) {
                 res.push(item)
+                if(item.state=="c") {
+                    console.log("conf.......")
+                }
             }
         })
 
-        setAllOrders(res)
+
+
+        setAllOrders(res)        
         setFilterOrders(res)
 
 
@@ -162,14 +198,13 @@ function OrderPage({ choiceTransoporter, setChoiceTransoporter, setShowTransport
     }
 
 
-    const getAllOrders = () => {
+    const getAllOrders = async () => {
 
         console.log("getting all orders...")
         const db = getDatabase();
         const shipments = ref(db, 'Shipment');
+const snapshot = await get(shipments);
 
-        get(shipments)
-            .then((snapshot) => {
                 const data = snapshot.val();
                 const list = Object.entries(data)
                 var clientorders = [];
@@ -180,15 +215,17 @@ function OrderPage({ choiceTransoporter, setChoiceTransoporter, setShowTransport
                     var client = await getClientById(element[1].client_id);
                     console.log(client[1].name);
 
-                    clientorders.push({ id: element[0], client: client[1].name, client_id: element[1].client_id, date: element[1].time_requested, from: element[1].charging_location, to: element[1].discharging_location, paiment: element[1].payment_method, price: element[1].price, state: element[1].state, weight: element[1].weight, vehicle_type: element[1].vehicle_type, description: element[1].description, size: element[1].size })
+                    console.log(element[1].state)
+                    clientorders.push({ id: element[0], client: client[1].name, client_id: element[1].client_id, date: element[1].time_requested, from: element[1].charging_location, to: element[1].discharging_location, paiment: element[1].payment_method, price: element[1].price, state: element[1].state, weight: element[1].weight, vehicle_type: element[1].vehicle_type, description: element[1].description, size: element[1].size , transporter_id:element[1].transporter_id })
                     index++;
 
 
                 });
 
+                console.log(clientorders)
                 setAllOrders(clientorders)
                 setPresAllOrders(clientorders)
-            })
+           
     }
 
     const getClientById = async (id) => {
@@ -203,7 +240,6 @@ function OrderPage({ choiceTransoporter, setChoiceTransoporter, setShowTransport
         for (let i = 0; i < list.length; i++) {
             let element = list[i];
             if (element[0] == id) {
-                console.log(element)
                 return element;
             }
         }
@@ -236,6 +272,18 @@ function OrderPage({ choiceTransoporter, setChoiceTransoporter, setShowTransport
 
 
     useEffect(()=> {
+        
+        setUpdateOrderView(false);
+        getAllOrders();
+        
+        getOrdersByDate()
+
+
+
+    },[updateOrderView ])
+
+
+    useEffect(()=> {
 
         getAllOrders();
         getAllTransporter();
@@ -265,7 +313,7 @@ function OrderPage({ choiceTransoporter, setChoiceTransoporter, setShowTransport
     return(
         <motion.div className="dashboard-orders orders-page" id="page2"
                         initial={{ opacity: 0 }}
-                        animate={anime ? { opacity: 1 } : { opacity: 0 }}
+                        animate={anime ? { opacity: 1,zIndex:3 } : { opacity: 0,zIndex:0 }}
                     >
 
                         <div className="left-orders">
@@ -318,24 +366,32 @@ function OrderPage({ choiceTransoporter, setChoiceTransoporter, setShowTransport
                                     </motion.div>
                                 </div>
 
-                                <div onClick={() => {
-                                    setSelectedStateFilter(0);
-                                    filterByState("a");
-                                }}>
-                                    <p>in-progress</p>
-                                </div>
 
                                 <div onClick={() => {
-                                    setSelectedStateFilter(0);
-                                    filterByState("a");
+                                    setSelectedStateFilter(4);
+                                    filterByState("d");
                                 }}>
+                                    <motion.div
+                                        className="selected-order-filter"
+                                        initial={{ width: "0%" }}
+                                        animate={selectedStateFilter == 4 ? { width: "100%" } : { width: 0 }}
+                                    >
+
+                                    </motion.div>
                                     <p>Delivred</p>
                                 </div>
 
                                 <div onClick={() => {
-                                    setSelectedStateFilter(0);
-                                    filterByState("a");
+                                    setSelectedStateFilter(5);
+                                    filterByState("cn");
                                 }}>
+                                    <motion.div
+                                        className="selected-order-filter"
+                                        initial={{ width: "0%" }}
+                                        animate={selectedStateFilter == 5 ? { width: "100%" } : { width: 0 }}
+                                    >
+
+                                    </motion.div>
                                     <p>Canceled</p>
                                 </div>
                             </div>
@@ -703,14 +759,14 @@ function OrderPage({ choiceTransoporter, setChoiceTransoporter, setShowTransport
                                 </motion.div>
                                 {
                                     filterOrders.length == 0 ? 
-                                    allOrders.map((item , index)=> {
+                                    filterOrders.map((item , index)=> {
                                         return(
                                             <div>
                                                 <div className="order-list-item">
                                                     <motion.p
                                                         initial={{ opacity: 1 }}
                                                         animate={selectedField[0] ? { opacity: 1 } : { opacity: 0, display: "none", }}
-                                                    >{index + 1}</motion.p>
+                                                    >{index}</motion.p>
                                                     <motion.p
                                                         initial={{ opacity: 1 }}
                                                         animate={selectedField[1] ? { opacity: 1 } : { display: "none", opacity: 0 }}
@@ -745,8 +801,8 @@ function OrderPage({ choiceTransoporter, setChoiceTransoporter, setShowTransport
                                                         initial={{ opacity: 1 }}
                                                         animate={selectedField[7] ? { opacity: 1 } : { display: "none", opacity: 0 }}
                                                     >
-                                                        <div className={item.state === "w" ? "stat-circle bkYellow" : "stat-circle bkBlue"} >
-                                                            {item.state === "w" ? <p>W</p> : <p>C</p>}
+                                                        <div className={item.state === "w" ? "stat-circle bkYellow" :item.state === "c" ? "stat-circle bkBlue" :item.state === "d"? "stat-circle bkgreen" : "stat-circle bkred"} >
+                                                            {item.state === "w" ? <p>W</p> : <p>{item.state}</p>}
                                                         </div>
                                                     </motion.p>
                                                     <div className="action"
@@ -788,9 +844,27 @@ function OrderPage({ choiceTransoporter, setChoiceTransoporter, setShowTransport
                                                     <motion.div className="order-action bkYellow"
                                                         initial={{ opacity: 0 }}
                                                         animate={showOrderAction == index ? { opacity: 1 } : { opacity: 0 }}
+                                                        onClick={()=> {
+                                                            setSelectedOrder(item)
+                                                            setShowCancelDetailOverlay(true);
+                                                            console.log("ddd")
+                                                        }}
                                                     >
                                                         <p>Cancel</p>
                                                     </motion.div>
+
+                                                    <motion.div className="order-action bkgreen"
+                                                        initial={{ opacity: 0 }}
+                                                        animate={showOrderAction == index ? { opacity: 1 } : { opacity: 0 }}
+                                                        onClick={()=> {
+                                                            setSelectedOrder(item)
+                                                            setShowDelivredOverlay(true);
+                                                            console.log("Delivred click")
+                                                        }}
+                                                    >
+                                                        <p>Delivred</p>
+                                                    </motion.div>
+
                                                 </motion.div>
                                             </div>
                                         )
@@ -841,8 +915,8 @@ function OrderPage({ choiceTransoporter, setChoiceTransoporter, setShowTransport
                                                         initial={{ opacity: 1 }}
                                                         animate={selectedField[7] ? { opacity: 1 } : { display: "none", opacity: 0 }}
                                                     >
-                                                        <div className={item.state === "w" ? "stat-circle bkYellow" : "stat-circle bkBlue"} >
-                                                            {item.state === "w" ? <p>W</p> : <p>C</p>}
+                                                        <div className={item.state === "w" ? "stat-circle bkYellow" :item.state === "c" ? "stat-circle bkBlue" :item.state === "d"? "stat-circle bkgreen" : "stat-circle bkred"} >
+                                                            {item.state === "w" ? <p>W</p> : <p>{item.state}</p>}
                                                         </div>
                                                     </motion.p>
                                                     <div className="action"
@@ -883,9 +957,25 @@ function OrderPage({ choiceTransoporter, setChoiceTransoporter, setShowTransport
                                                     </motion.div>
                                                     <motion.div className="order-action bkYellow"
                                                         initial={{ opacity: 0 }}
-                                                        animate={showOrderAction ? { opacity: 1 } : { opacity: 0 }}
+                                                        animate={showOrderAction == index ? { opacity: 1 } : { opacity: 0 }}
+                                                        onClick={()=> {
+                                                            setSelectedOrder(item)
+                                                            setShowCancelDetailOverlay(true);
+                                                        }}
                                                     >
                                                         <p>Cancel</p>
+                                                    </motion.div>
+
+                                                    <motion.div className="order-action bkgreen"
+                                                        initial={{ opacity: 0 }}
+                                                        animate={showOrderAction == index ? { opacity: 1 } : { opacity: 0 }}
+                                                        onClick={()=> {
+                                                            setSelectedOrder(item)
+                                                            setShowDelivredOverlay(true);
+                                                            console.log("ddd")
+                                                        }}
+                                                    >
+                                                        <p>Delivred</p>
                                                     </motion.div>
                                                 </motion.div>
                                             </div>
@@ -901,9 +991,12 @@ function OrderPage({ choiceTransoporter, setChoiceTransoporter, setShowTransport
                         </div>
                         <div className="right-orders">
                             <div className="date-picker-container">
-                                <div className="date-container">
-                                    <p>2023/10/29</p>
-                                </div>
+                                    < input type="date" className="date-container" value={calandarDate} onChange={(e)=> {
+                                        setCalandarDate(e.target.value)
+                                        setSelectedDateAnim(8)
+                                        getOrdersByDate(e.target.value.split("-")[2] + "/" + e.target.value.split("-")[1] + "/" + e.target.value.split("-")[0]);
+                                    }}/>
+                                
                             </div>
 
                             <div className="date-items-list">
@@ -913,6 +1006,10 @@ function OrderPage({ choiceTransoporter, setChoiceTransoporter, setShowTransport
                                         setSelectedDateAnim(6)
                                         var date = new Date();
                                         date.setDate(date.getDate() - 6);
+                                        
+                                        const today = new Date();
+                                        const defaultValue = new Date(today).toISOString().split('T')[0]
+                                        setCalandarDate(defaultValue)
 
                                         getOrdersByDate(formatDate(date));
                                     }}
@@ -927,6 +1024,10 @@ function OrderPage({ choiceTransoporter, setChoiceTransoporter, setShowTransport
                                         var date = new Date();
                                         date.setDate(date.getDate() - 5);
                                         getOrdersByDate(formatDate(date));
+
+                                        const today = new Date();
+                                        const defaultValue = new Date(today).toISOString().split('T')[0]
+                                        setCalandarDate(defaultValue)
                                     
                                     }}
                                 >
@@ -940,6 +1041,10 @@ function OrderPage({ choiceTransoporter, setChoiceTransoporter, setShowTransport
                                         var date = new Date();
                                         date.setDate(date.getDate() - 4);
                                         getOrdersByDate(formatDate(date));
+
+                                        const today = new Date();
+                                        const defaultValue = new Date(today).toISOString().split('T')[0]
+                                        setCalandarDate(defaultValue)
                                     }}
                                 >
                                     <p>{getPrevDate(4).day}</p>
@@ -953,6 +1058,11 @@ function OrderPage({ choiceTransoporter, setChoiceTransoporter, setShowTransport
                                         date.setDate(date.getDate() - 3);
                                         console.log(formatDate(date))
                                         getOrdersByDate(formatDate(date));
+
+
+                                        const today = new Date();
+                                        const defaultValue = new Date(today).toISOString().split('T')[0]
+                                        setCalandarDate(defaultValue)
                                     }}
                                 >
                                     <p>{getPrevDate(3).day}</p>
@@ -966,6 +1076,11 @@ function OrderPage({ choiceTransoporter, setChoiceTransoporter, setShowTransport
                                         date.setDate(date.getDate() - 2);
                                         console.log(formatDate(date))
                                         getOrdersByDate(formatDate(date));
+
+
+                                        const today = new Date();
+                                        const defaultValue = new Date(today).toISOString().split('T')[0]
+                                        setCalandarDate(defaultValue)
                                     }}
                                 >
                                     <p>{getPrevDate(2).day}</p>
@@ -979,6 +1094,10 @@ function OrderPage({ choiceTransoporter, setChoiceTransoporter, setShowTransport
                                         date.setDate(date.getDate() - 1);
                                         console.log(formatDate(date))
                                         getOrdersByDate(formatDate(date));
+
+                                        const today = new Date();
+                                        const defaultValue = new Date(today).toISOString().split('T')[0]
+                                        setCalandarDate(defaultValue)
                                     }}
                                 >
                                     <p>{getPrevDate(1).day}</p>
@@ -992,6 +1111,10 @@ function OrderPage({ choiceTransoporter, setChoiceTransoporter, setShowTransport
                                         date.setDate(date.getDate() );
                                         console.log(formatDate(date))
                                         getOrdersByDate(formatDate(date));
+
+                                        const today = new Date();
+                                        const defaultValue = new Date(today).toISOString().split('T')[0]
+                                        setCalandarDate(defaultValue)
                                     }}
                                 >
                                     <p>{getPrevDate(0).day}</p>
@@ -1004,7 +1127,10 @@ function OrderPage({ choiceTransoporter, setChoiceTransoporter, setShowTransport
                                 <p>Transporter</p>
                                 
                                 <div className="rech-container">
-
+                                    <input type="text" placeholder="Transporter name" value={rechTransp} onChange={(e)=> {
+                                        setRechTransp(e.target.value);
+                                        updateTranspRech();
+                                    }}/>
                                 </div>
                                 <div className="filters-container">
                                     <motion.div className="filer-components"
@@ -1064,7 +1190,9 @@ function OrderPage({ choiceTransoporter, setChoiceTransoporter, setShowTransport
                                                            initial={{ scale: "0", opacity: 0 }}
                                                            animate={showTransporterInfos == index ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
                                                            onClick={() => {
-                                                               setShowOrdersOverlay(true)
+                                                            
+                                                            setShowTranspDetails(true)
+                                                            setSelectedTranspDetail(item)
                                                            }}
                                                        >
                                                            <p>More Infos</p>
@@ -1126,7 +1254,9 @@ function OrderPage({ choiceTransoporter, setChoiceTransoporter, setShowTransport
                                                                 initial={{ scale: "0", opacity: 0 }}
                                                                 animate={showTransporterInfos == index ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
                                                                 onClick={() => {
-                                                                    setShowOrdersOverlay(true)
+                                                                    
+                                                            setShowTranspDetails(true)
+                                                            setSelectedTranspDetail(item)
                                                                 }}
                                                             >
                                                                 <p>More Infos</p>

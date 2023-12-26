@@ -6,6 +6,7 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
+import DynamicForm from './Components/test';
 
 
 
@@ -18,6 +19,10 @@ const App = () => {
     {
       path: "/dashboard",
       element: <Dasboard/>,
+    },
+    {
+      path: "/test",
+      element: <DynamicForm/>,
     },
   ]);
 

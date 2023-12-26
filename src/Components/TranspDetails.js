@@ -10,7 +10,7 @@ import { getDatabase, ref, set, push, get, update } from "firebase/database";
 
 
 
-function TranspDetails({transp , visible , close}) {
+function TranspDetails({transp , visible , close , setShowOrdersOverlay , setSelectedOrder}) {
 
 
 
@@ -64,8 +64,9 @@ function TranspDetails({transp , visible , close}) {
 
     
     useEffect(()=> {
-        console.log("trans.............")
         if (transp != null) {
+            
+        console.log("trans.............")
             getOrderByTransp(transp.id);
         }
 
@@ -141,6 +142,8 @@ function TranspDetails({transp , visible , close}) {
 
                         
 
+                        
+
 
 
 
@@ -172,6 +175,15 @@ function TranspDetails({transp , visible , close}) {
                                             <p>{item.price}</p>
                                         </div>
 
+                                        <div className="more-info-detail"
+                                            onClick={()=> {
+                                                
+                                                setShowOrdersOverlay(true);
+                                                setSelectedOrder(item);
+                                            }}
+                                        >
+                                            <img src={exit}/>
+                                        </div>
                                        
 
 
