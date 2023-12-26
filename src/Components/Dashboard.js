@@ -311,7 +311,7 @@ function Dasboard() {
 
                 console.log(transporter_params);
             
-                emailjs.send("service_sv5l70m","template_6lq2fnq",transporter_params);
+                emailjs.send("service_b6v0zjq","template_6lq2fnq",transporter_params);
 
                 var client_params = {
                     email_content : "Your delivery has been confirmed by ".concat(selectedTransp.name).concat(".\n From: \"".concat(selectedOrder.from).concat("\" To: \"").concat(selectedOrder.to).concat("\".\n").concat(" Transporter's Telephone Number: ".concat(selectedTransp.phone))),
@@ -322,7 +322,7 @@ function Dasboard() {
 
                 console.log(client_params);
 
-                emailjs.send("service_sv5l70m","template_6lq2fnq",client_params);
+                emailjs.send("service_b6v0zjq","template_6lq2fnq",client_params);
 
         return update(id, data);
 
