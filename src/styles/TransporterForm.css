@@ -1,0 +1,59 @@
+.transporter-Form {
+    width: calc(100% - 40px);
+    height: calc(100% - 40px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    padding: 20px;
+    position: relative;
+}
+
+.transporter-Form > p {
+    font-size: 20px;
+}
+
+.transporter-Form input {
+    width: calc(100% - 30px);
+    background-color: white;
+    color: #212A3E;
+    
+}
+.transporter-Form .form-grp {
+    width: 90%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.transporter-Form .form-input {
+    width: 48%;
+}
+
+
+.form-actions {
+    display: flex;
+    width: 60%;
+    justify-content: space-evenly;
+}
+
+.form-actions .form-action {
+    width: 200px;
+    height: 60px;
+    border-radius: 5px;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.form-actions .second-action {
+    color: #212A3E;
+}
+
+.exit-btn {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+}

@@ -1,0 +1,175 @@
+.orders-details {
+    width: calc(100% - 40px);
+    height: calc(100% - 40px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    padding: 20px;
+    background-color: #F1EFEF;
+}
+
+
+.top-orders-details,
+.bottom-orders-details {
+    width: 100%;
+    height: 50%;
+    position: relative;
+}
+
+.top-orders-details {
+    background-color: rgba(54, 47, 217 , 0.7);
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.orders-infos {
+    width: calc(18% - 40px);
+    height: calc(80% - 40px);
+    background-color: white;
+    border-radius: 5px;
+    padding: 20px;
+    position: relative;
+}
+
+.orders-infos:first-child {
+    background-color: transparent;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+}
+
+.orders-infos:first-child p {
+    margin-bottom: 20px;
+}
+
+.orders-infos:nth-child(5) .order-info-img {
+    background-color: #00A9FF;
+}
+
+
+.order-info-header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.order-info-header p {
+    width: 80%;
+}
+
+.order-info-img {
+    min-width: 50px;
+    min-height: 50px;
+    background-color: rgba(54, 47, 217 , 1);
+    border-radius: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 20px;
+
+}
+
+.order-info-corps {
+    width: 100%;
+    height: 80%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.order-info-corps p+p {
+    font-size: 20px;
+    margin-top: 10px;
+}
+
+
+.bottom-orders-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    position: relative;
+    font-weight: bold;
+}
+
+
+.bottom-orders-details .orders-infos {
+    width: 12% ;
+    height: 70%;
+    border-radius: 5px;
+    background-color: white;
+
+    
+}
+
+.bottom-orders-details .orders-infos:first-child {
+    box-shadow: none;
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+    color: #212A3E;
+}
+
+
+.btn {
+    width: 200px;
+    height: 50px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    padding: 00;
+    background-color: rgba(54, 47, 217 ,1);
+}
+
+
+
+.btn p{
+    position: relative;
+    top: 40%;
+    transform: translateY(-50%);
+}
+.bottom-orders-details .state-container p {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+
+
+.big-text {
+    font-size: 20px;
+}
+
+
+.bottom-orders-details .order-info-img {
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    left: 50%;
+    top: -25px;
+    transform: translateX(-50%);
+}
+
+.bottom-orders-details .orders-infos {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    text-align: center;
+}
+
+.bottom-orders-details .order-info-corps {
+    height: 60%;
+}
+
