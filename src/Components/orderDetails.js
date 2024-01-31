@@ -10,6 +10,9 @@ import exit from "../asstes/dashboard/exit.png"
 import { getDatabase, ref, set, push, get } from "firebase/database";
 
 
+import palette from "../asstes/palette.png"
+
+
 
 function OrderDetails({order , close }) {
 
@@ -101,7 +104,7 @@ function OrderDetails({order , close }) {
                     </div>
 
                     <div className="order-info-corps">
-                        <p className="small-text">Korssa Client Xsc85</p>
+                         
                         <p>{order.from}</p>
                     </div>
                 </div>
@@ -115,22 +118,23 @@ function OrderDetails({order , close }) {
                     </div>
 
                     <div className="order-info-corps">
-                        <p className="small-text">Korssa Client Xsc85</p>
+                         
                         <p>{order.to}</p>
                     </div>
                 </div>
                 <div className="orders-infos">
                     <div className="order-info-header">
                         <div className="order-info-img">
-                            <img src={client} alt="" />
+                            <img src={palette} alt="" />
                         </div>
 
-                        <p>Price</p>
+                        <p>Pallette Number</p>
+
+                        
                     </div>
 
                     <div className="order-info-corps">
-                        <p className="small-text">Korssa Client Xsc85</p>
-                        <p>{order.price}</p>
+                        <p>{order.palette_number != "" ? order.palette_number : "0"}</p>
                     </div>
                 </div>
 
@@ -140,7 +144,7 @@ function OrderDetails({order , close }) {
                     <p>Order State</p>
 
                     <motion.p className="state-container">
-                        <div  className={order.state === "w" ? "stat-circle bkYellow" :order.state === "c" ? "stat-circle bkBlue" :order.state === "d"? "stat-circle bkgreen" : "stat-circle bkred"} >
+                        <div  className={order.state === "w" ? "stat-circle bkYellow" :order.state === "c" ? "stat-circle bkBlue" :order.state === "d"? "stat-circle bkgreen" :order.state === "oos"?  "stat-circle bkOrange": "stat-circle bkred"} >
                             <p>{order.state}</p>
                         </div>
                     </motion.p>
@@ -155,6 +159,11 @@ function OrderDetails({order , close }) {
                     order.state === "d" ?
                     <p className="big-text">Delivred</p>
                     :
+                    order.state === "oos" ?
+                    
+                    <p className="big-text">Out Of Service</p>
+                    :
+
                     <p className="big-text">Canceled</p>
                     
                     }
@@ -166,7 +175,7 @@ function OrderDetails({order , close }) {
                          <div>
                             <p>Transporter</p>
                             <div className="btn">
-                                <p>{transp!= null ? transp.name + "   ("+ transp.phone+")" : "ss"}  </p>
+                                <p>{transp!= null ? transp.name + "   ("+ transp.phone+")" : "-"}  </p>
                                 
                             </div>
                             
@@ -181,7 +190,7 @@ function OrderDetails({order , close }) {
                     </div>
                     <p>Vehicle</p>
                     <div className="order-info-corps">
-                        <p className="small-text">Korssa Client Xsc85</p>
+                         
                         <p>{order.vehicle_type}</p>
                     </div>
                 </div>
@@ -191,7 +200,7 @@ function OrderDetails({order , close }) {
                     </div>
                     <p>Payment Method</p>
                     <div className="order-info-corps">
-                        <p className="small-text">Korssa Client Xsc85</p>
+                         
                         <p>{order.paiment}</p>
                     </div>
                 </div>
@@ -201,7 +210,7 @@ function OrderDetails({order , close }) {
                     </div>
                     <p>Size</p>
                     <div className="order-info-corps">
-                        <p className="small-text">Korssa Client Xsc85</p>
+                         
                         <p>{order.size}</p>
                     </div>
 
@@ -214,7 +223,7 @@ function OrderDetails({order , close }) {
                     <p>weight</p>
 
                     <div className="order-info-corps">
-                        <p className="small-text">Korssa Client Xsc85</p>
+                         
                         <p>{order.weight}</p>
                     </div>
                 </div>

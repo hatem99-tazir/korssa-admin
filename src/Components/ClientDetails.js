@@ -76,7 +76,7 @@ function ClientDetails({ client, visible, close , setShowOrdersOverlay , setSele
 
         setTimeout(() => {
             setloading(false)
-        }, 3000)
+        }, 1000)
 
 
         

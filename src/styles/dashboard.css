@@ -805,8 +805,13 @@
 .bkBlue {
     background-color: #362FD9;
 }
+
 .bkYellow {
     background-color: #FFC436;
+}
+
+.bkOrange {
+    background-color: #FF9036;
 }
 
 .bkred {
@@ -1512,13 +1517,13 @@ margin-top: 55px;
 
 
 .transpPapers-container {
-    height: 50%;
+    height: 70%;
     width: 70%;
 }
 
 .leg-container {
     width: 100%;
-    height: 80%;
+    height: 70%;
     display: grid;
     grid-template-columns: repeat(2 , 1fr);
     
@@ -1536,3 +1541,163 @@ margin-top: 55px;
     position: relative;
     bottom: 5px;
 }
+
+.transp-paper-actions {
+    width: 100%;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.transp-paper-btn {
+    width: 100px;
+    height: 50px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #362FD9;
+    color: white;
+    margin-left: 20px;
+    margin-right: 20px;
+    cursor: pointer;
+}
+
+.transp-paper-btn:last-child {
+    width: 100px;
+    height: 60px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    color: grey;
+}
+
+
+.orders-infos img {
+    width: 25px;
+
+}
+
+.mirror {
+    -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+}
+
+.logout-conf {
+    width: 50%;
+    height: 30%;
+    background-color: white;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.logout-actions {
+    display: flex;
+    margin-top: 40px;
+}
+
+.logout-actions div {
+    cursor:pointer;
+}
+
+.logout-actions div:last-child {
+    background-color: transparent;
+    color: grey;
+}
+
+
+
+@media only screen and (max-width: 1000px) {
+  
+    .dashboard-resposnive {
+
+        display: flex !important;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    
+}
+
+
+@media only screen and (max-width: 1260px) {
+  
+  
+
+    .orders-filters div{
+        margin-right: 30px;
+    }
+
+    .order-list-item {
+        min-height: fit-content;
+    }
+
+    
+}
+
+.dashboard-resposnive {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: white;
+    z-index: 99;
+    display: none;
+    text-align: center;
+    font-weight: bold;
+
+
+}
+
+.dashboard-resposnive img {
+    width: 150px;
+    height: 150px;
+}
+
+
+
+.customize {
+    width: 100%;
+    height: 100%;
+}
+
+
+.filter-options > p:first-child{
+    width: 50px;
+}
+
+.filer-components + .filer-components p {
+    width: 100%;
+}
+
+
+
+.ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: relative;
+  }
+
+  .mask {
+    
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    right: 0;
+    background-color: white;
+    background: rgb(255,255,255);
+    
+background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 70%, rgba(255,255,255,1) 85%);
+    
+  }
+

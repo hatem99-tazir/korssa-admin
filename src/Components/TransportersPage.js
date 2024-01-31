@@ -8,6 +8,7 @@ import exit from "../asstes/dashboard/exit.png"
 import actions from "../asstes/dashboard/actions.png"
 import arrow from "../asstes/dashboard/arrow.png"
 
+
 import { getDatabase, ref, set, push, get } from "firebase/database";
 
 
@@ -236,7 +237,35 @@ function TransporterPage({ updateView ,setUpdateView, setSelectedTranspDetail, s
                 var transps = [];
                 list.forEach(element => {
                     console.log("agent exsist")
-                    transps.push({ id: element[0], name: element[1].name, city: element[1].city, location: element[1].location, email: element[1].email, payment_method: element[1].payment_method, phone: element[1].phone, state: element[1].status, vehicle_type: element[1].vehicle, date: "12/12/2023" ,  })
+                    let obj = { id: element[0], name: element[1].name, city: element[1].city, location: element[1].location, email: element[1].email, payment_method: element[1].payment_method, phone: element[1].phone, state: element[1].status, vehicle_type: element[1].vehicle, date: "12/12/2023" ,  
+                    Carte_grise: element[1].Carte_grise,
+                    Assurance:  element[1].Assurance,
+                    Vignette: element[1].Vignette,
+                    Controle_technique: element[1].Controle_technique,
+                    Permis_de_Circuler: element[1].Permis_de_Circuler,
+                    Autorisation_transport_marchandises: element[1].Autorisation_transport_marchandises,
+                    Autorisation_transport_produits_Dangereux: element[1].Autorisation_transport_marchandises,
+                    Etiquettage: element[1].Etiquettage,
+                    Assurance_marchandises: element[1].Assurance_marchandises,
+                    Registre_de_commerce: element[1].Registre_de_commerce,
+                    Carte_rouge: element[1].Carte_rouge,
+                    Permis_de_conduire: element[1].Permis_de_conduire}
+                    obj.set = (nData) => {
+                        let nt = {...obj};
+                        Object.keys(nData).forEach((key, ind) => {
+                            nt[key] = nData[key];
+                        })
+
+                        let na = [...transps];
+                        let i = transps.indexOf(obj)
+                        na.splice(i, 1, nt);
+
+                        setSelectedTranspDetail(nt);
+                        setAllTransporters(na)
+                        setChoiceTransoporter(na)
+                    }
+                    transps.push(obj)
+
                     console.log(element[1].name)
 
                 });
@@ -379,17 +408,19 @@ function TransporterPage({ updateView ,setUpdateView, setSelectedTranspDetail, s
                             <div className="filter-options"
                                 onClick={() => {
 
-                                    const arr = selectedField.map(function (item, index) {
-                                        if (index === 0) {
-                                            item = !item;
-                                        }
-                                        return item;
-                                    })
-
-                                    setSelectedField(arr)
-
-                                    console.log(selectedField)
-                                    console.log(selectedField[0])
+                                    if(showSelectOption1){
+                                        const arr = selectedField.map(function (item, index) {
+                                            if (index === 0) {
+                                                item = !item;
+                                            }
+                                            return item;
+                                        })
+    
+                                        setSelectedField(arr)
+    
+                                        console.log(selectedField)
+                                        console.log(selectedField[0])
+                                    }
 
                                 }}
                             >
@@ -408,20 +439,27 @@ function TransporterPage({ updateView ,setUpdateView, setSelectedTranspDetail, s
                                     hide
                                             </motion.p>
                             </div>
-                            <div className="filter-options"
+
+
+                            <motion.div className="filter-options"
+                            animate={showSelectOption1 ? {display:"flex"} : {display:"none"}}
 
                                 onClick={() => {
+                                    
+                                    if(showSelectOption1){
 
-                                    const arr = selectedField.map(function (item, index) {
-                                        if (index === 1) {
-                                            item = !item;
-                                        }
-                                        return item;
-                                    })
-
-                                    setSelectedField(arr)
-
-                                    console.log(selectedField)
+                                        const arr = selectedField.map(function (item, index) {
+                                            if (index === 1) {
+                                                item = !item;
+                                            }
+                                            return item;
+                                        })
+    
+                                        setSelectedField(arr)
+    
+                                        console.log(selectedField)
+    
+                                    }
 
                                 }}
                             >
@@ -439,8 +477,10 @@ function TransporterPage({ updateView ,setUpdateView, setSelectedTranspDetail, s
                                 >
                                     hide
                                             </motion.p>
-                            </div>
-                            <div className="filter-options"
+                            </motion.div>
+                            <motion.div className="filter-options"
+                            animate={showSelectOption1 ? {display:"flex"} : {display:"none"}}
+
                                 onClick={() => {
 
                                     const arr = selectedField.map(function (item, index) {
@@ -471,8 +511,10 @@ function TransporterPage({ updateView ,setUpdateView, setSelectedTranspDetail, s
                                 >
                                     hide
                                             </motion.p>
-                            </div>
-                            <div className="filter-options"
+                            </motion.div>
+                            <motion.div className="filter-options"
+                            animate={showSelectOption1 ? {display:"flex"} : {display:"none"}}
+
                                 onClick={() => {
 
                                     const arr = selectedField.map(function (item, index) {
@@ -503,8 +545,10 @@ function TransporterPage({ updateView ,setUpdateView, setSelectedTranspDetail, s
                                 >
                                     hide
                                             </motion.p>
-                            </div>
-                            <div className="filter-options"
+                            </motion.div>
+                            <motion.div className="filter-options"
+                            animate={showSelectOption1 ? {display:"flex"} : {display:"none"}}
+
                                 onClick={() => {
 
                                     const arr = selectedField.map(function (item, index) {
@@ -535,8 +579,10 @@ function TransporterPage({ updateView ,setUpdateView, setSelectedTranspDetail, s
                                 >
                                     hide
                                             </motion.p>
-                            </div>
-                            <div className="filter-options"
+                            </motion.div>
+                            <motion.div className="filter-options"
+                            animate={showSelectOption1 ? {display:"flex"} : {display:"none"}}
+
                                 onClick={() => {
 
                                     const arr = selectedField.map(function (item, index) {
@@ -553,7 +599,7 @@ function TransporterPage({ updateView ,setUpdateView, setSelectedTranspDetail, s
 
                                 }}
                             >
-                                <p>paiment</p>
+                                <p>Payment</p>
                                 <motion.p
                                     className="select-text-action"
                                     animate={!selectedField[5] ? { opacity: 1 } : { opacity: 0 }}
@@ -567,8 +613,10 @@ function TransporterPage({ updateView ,setUpdateView, setSelectedTranspDetail, s
                                 >
                                     hide
                                             </motion.p>
-                            </div>
-                            <div className="filter-options"
+                            </motion.div>
+                            <motion.div className="filter-options"
+                                animate={showSelectOption1 ? {display:"flex"} : {display:"none"}}
+
                                 onClick={() => {
 
                                     const arr = selectedField.map(function (item, index) {
@@ -599,10 +647,9 @@ function TransporterPage({ updateView ,setUpdateView, setSelectedTranspDetail, s
                                 >
                                     hide
                                             </motion.p>
-                            </div>
-
-                            <div className="filter-options"
-
+                            </motion.div>
+                            <motion.div className="filter-options"
+                                animate={showSelectOption1 ? {display:"flex"} : {display:"none"}}
                                 onClick={() => {
 
                                     const arr = selectedField.map(function (item, index) {
@@ -633,7 +680,7 @@ function TransporterPage({ updateView ,setUpdateView, setSelectedTranspDetail, s
                                 >
                                     hide
                                             </motion.p>
-                            </div>
+                            </motion.div>
                         </motion.div>
                     </div>
                     <div className="filer-components"
@@ -792,15 +839,7 @@ function TransporterPage({ updateView ,setUpdateView, setSelectedTranspDetail, s
                                             animate={showOrderAction == index ? { height: "60px", opacity: 1, transition: { delay: 0 } } : { height: "0", opacity: 0, transition: { delay: 0 } }}
                                         >
 
-                                            <motion.div className="order-action bkBlue"
-                                                initial={{ opacity: 0 }}
-                                                animate={showOrderAction == index ? { opacity: 1 } : { opacity: 0 }}
-                                                onClick={() => {
-
-                                                }}
-                                            >
-                                                <p>Select Transporter</p>
-                                            </motion.div>
+                                           
                                             <motion.div className="order-action bkRed"
                                                 initial={{ opacity: 0 }}
                                                 animate={showOrderAction == index ? { opacity: 1 } : { opacity: 0 }}
@@ -886,15 +925,7 @@ function TransporterPage({ updateView ,setUpdateView, setSelectedTranspDetail, s
                                             animate={showOrderAction == index ? { height: "60px", opacity: 1, transition: { delay: 0 } } : { height: "0", opacity: 0, transition: { delay: 0 } }}
                                         >
 
-                                            <motion.div className="order-action bkBlue"
-                                                initial={{ opacity: 0 }}
-                                                animate={showOrderAction == index ? { opacity: 1 } : { opacity: 0 }}
-                                                onClick={() => {
-
-                                                }}
-                                            >
-                                                <p>Select Transporter</p>
-                                            </motion.div>
+                                            
                                             <motion.div className="order-action bkRed"
                                                 initial={{ opacity: 0 }}
                                                 animate={showOrderAction == index ? { opacity: 1 } : { opacity: 0 }}
@@ -910,7 +941,7 @@ function TransporterPage({ updateView ,setUpdateView, setSelectedTranspDetail, s
                                                 initial={{ opacity: 0 }}
                                                 animate={showOrderAction == index ? { opacity: 1 } : { opacity: 0 }}
                                             >
-                                                <p>Cancel</p>
+                                                <p>Remove</p>
                                             </motion.div>
                                         </motion.div>
                                     </div>

@@ -13,7 +13,7 @@ import { getDatabase, ref, set, push, get } from "firebase/database";
 
 
 
-function SelectTranspConf({ selectTranspOverlay, setSelectTranspOverlay, order, transp, confirmOrder , updateView }) {
+function SelectTranspConf({ selectTranspOverlay, setSelectTranspOverlay, order, transp, confirmOrder }) {
 
     return(
 
@@ -38,9 +38,8 @@ function SelectTranspConf({ selectTranspOverlay, setSelectTranspOverlay, order, 
                 <div className="conf-actions">
                     <div className="conf-action"
                         onClick={() => {
-                            confirmOrder(order.id , transp.id);
+                            confirmOrder(order , transp.id);
                             setSelectTranspOverlay(false);
-                            updateView();
                         }}
                     >
                         <p>Confirme</p>

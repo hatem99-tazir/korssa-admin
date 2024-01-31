@@ -133,6 +133,13 @@ const Home = () => {
   >
 
       
+<motion.div className="dashboard-resposnive"
+            
+            >
+
+                <img src={logo} alt="" />
+                <p>Korsaa Admin Panel Is Available Only On Bigger Screens !</p>
+            </motion.div> 
 
       <div className="black-overlay">
 
@@ -146,9 +153,9 @@ const Home = () => {
       <div className="login-form">
 
         <img src={logo} alt="" />
-        <p className="small-text">Wellcome Again</p>
+        <p className="small-text">Welcome Again</p>
         <h2>LOGIN</h2>
-        <p className="small-text" >Veuillez vous athentifier pour acceder a votre espace Admin</p>
+        <p className="small-text" >Veuillez vous athentifier pour accéder a votre espace Admin</p>
         <form onSubmit={HandleLogin}>
           <div className="form-group">
             <label htmlFor="email">Email:</label>
@@ -180,7 +187,7 @@ const Home = () => {
           </div>
           <div className="action-group">
             <div className="btn-container">
-              <p>Mot de passe Oublie ?</p>
+              <p>Mot de passe Oublié ?</p>
             </div>
             <div className="btn-container"
                   onClick={(event)=> {

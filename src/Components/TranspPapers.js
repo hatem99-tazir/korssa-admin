@@ -10,12 +10,36 @@ import { getDatabase, ref, set, push, get, update } from "firebase/database";
 import { init } from "@emailjs/browser";
 
 
+const updateLegistlation = async (initialValues, transp) => {
+
+    const db = getDatabase();
+            const data = {
+                Carte_grise: initialValues.Carte_grise == true ? true : false,
+                Assurance:  initialValues.Assurance == true ? true : false,
+                Vignette: initialValues.Vignette == true ? true : false,
+                Controle_technique: initialValues.Controle_technique == true ? true : false ,
+                Permis_de_Circuler: initialValues.Permis_de_Circuler == true ? true : false,
+                Autorisation_transport_marchandises: initialValues.Autorisation_transport_marchandises == true ? true : false,
+                Autorisation_transport_produits_Dangereux: initialValues.Autorisation_transport_produits_Dangereux == true ? true : false,
+                Etiquettage: initialValues.Etiquettage == true ? true : false,
+                Assurance_marchandises: initialValues.Assurance_marchandises == true ? true : false,
+                Registre_de_commerce: initialValues.Registre_de_commerce == true ? true : false,
+                Carte_rouge: initialValues.Carte_rouge == true ? true : false,
+                Permis_de_conduire: initialValues.Permis_de_conduire == true ? true : false,
+            };
+
+            transp.set(data);
+    
+        const id = ref(db, 'Transporter/' + transp.id);
+        return update(id, data);
+    
+}
 
 function TranspPapers({transp , visible , close , setShowOrdersOverlay , setSelectedOrder}) {
+    console.log(transp);
 
-
-    const  [ initialValues , setInitialValues ] = {
-        carte_grise: false,
+    const  [ initialValues , setInitialValues ] = useState({
+        Carte_grise: transp.Carte_grise,
         Assurance:  transp.Assurance,
         Vignette: transp.Vignette,
         Controle_technique: transp.Controle_technique,
@@ -24,29 +48,41 @@ function TranspPapers({transp , visible , close , setShowOrdersOverlay , setSele
         Autorisation_transport_produits_Dangereux: transp.Autorisation_transport_produits_Dangereux,
         Etiquettage: transp.Etiquettage,
         Assurance_marchandises: transp.Assurance_marchandises,
-        registre_de_commerce: transp.registre_de_commerce,
+        Registre_de_commerce: transp.Registre_de_commerce,
         Carte_rouge: transp.Carte_rouge,
         Permis_de_conduire: transp.Permis_de_conduire,
+      });
+
+      let [valChange, setValChange] = useState(0);
+
+      const handleLabelClick = (e, index) => {
+        let newValues = {...initialValues};
+        newValues[index] = !newValues[index];
+
+        setInitialValues(newValues);
+
+        setValChange((valChange + 1) % 3);
+      }
+
+      const handleRadioChange = (e , index) => {
+        let newValues = {...initialValues};
+        let v = e.target.checked;
+        newValues[index] = v;
+
+        setInitialValues(newValues);
+
+        setValChange((valChange + 1) % 3);
       };
 
-    const handleRadioChange = (e , index)=> {
-        console.log(index)
+      useEffect(() => {
+        setInitialValues(prevValues => ({ ...prevValues }));
+      }, [valChange]);
 
-        setInitialValues((prevValues) => {
-            // Update values as needed
-            return {
-              ...prevValues,
-              [index]: [e.target.value],
-              // Add/update other values as needed
-            };
-          });
-    }
 
     const [orders , setorders] = useState([]);
     const [loading, setloading] = useState(true);
 
     const getClientById = async (id) => {
-
 
         const db = getDatabase();
         const shipments = ref(db, 'Client');
@@ -148,20 +184,47 @@ function TranspPapers({transp , visible , close , setShowOrdersOverlay , setSele
                     
                     {Object.keys(initialValues).map((option, index) => (
                         
-                    <div key={index} className="leg-item">
+                    <div key={option} className="leg-item">
                     <input
-                        type="radio"
+                        type="checkbox"
                         id={option}
+
                         value={initialValues[option]}
+                        
                         checked={initialValues[option]}
                         onChange={(e)=>handleRadioChange(e,option)}
+                        
                     />
-                    <label htmlFor={option}>{option}</label>
+                    <label htmlFor={option} onClick={(e) => handleLabelClick(e, option)}>{option.replaceAll("_", " ")}</label>
                     </div>
                 ))}
                     
 
                 </div>
+
+
+                <div className="transp-paper-actions">
+                    <div className="transp-paper-btn"
+                        onClick={()=> {
+                            updateLegistlation(initialValues, transp);
+                            close();
+                        }}
+                    >
+                    
+                        <p>Save</p>
+
+                    </div>
+
+                    <div className="transp-paper-btn"
+                    onClick={()=> {
+                        close()
+                    }}
+                    >
+                        <p>Cancel</p>
+                    </div>
+
+                </div>
+                
 
                 
                 

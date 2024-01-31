@@ -23,7 +23,35 @@ function TransporterForm({setUpdateTranspView, close , list , update}) {
       ];
 
       const payment_methods = ["Hand-To-Hand" , "Bill" , "Check" , "Bank Transfer"];
-      const vehicle_types = ["Truck", "Fourgon", "Normal Car"]
+      const vehicle_types = [
+        "Remorque plateau Avec Ridelles - Tracteur 4x2",
+        "Remorque plateau Avec Ridelles - Tracteur 6x4",
+        "Remorque plateau Avec Ridelles - Tracteur 6x6",
+        "Remorque plateau Sans Ridelles - Tracteur 4x2",
+        "Remorque plateau Sans Ridelles - Tracteur 6x4",
+        "Remorque plateau Sans Ridelles - Tracteur 6x6",
+        "Porte-Engins - Tracteur 4x2",
+        "Porte-Engins - Tracteur 6x4",
+        "Porte-Engins - Tracteur 6x6",
+        "Porte-Engins Syrbaissé - Tracteur 4x2",
+        "Porte-Engins Syrbaissé - Tracteur 6x4",
+        "Porte-Engins Syrbaissé - Tracteur 6x6",
+        "Remorque Large - Tracteur 4x2",
+        "Remorque Large - Tracteur 6x4",
+        "Remorque Large - Tracteur 6x6",
+        "Porte-Véhicules - Remorque citrene",
+        "Porte-Véhicules - Tracteur 4x2",
+        "Porte-Véhicules - Tracteur 6x4",
+        "Porte-Véhicules - Tracteur 6x6",
+
+        "Remorque citrene - Tracteur 4x2",
+        "Remorque citrene - Tracteur 6x4",
+        "Remorque citrene - Tracteur 6x6",
+
+
+        "Forgon 2 Panneaux" ,  
+        "Forgon 3 Panneaux"
+      ];
 
     const [transName, setTransName] = useState("");
     const [transCity, setTransCity] = useState("");
@@ -59,7 +87,19 @@ function TransporterForm({setUpdateTranspView, close , list , update}) {
             payment_method: transPayment,
             vehicle: vehicle,
             signup_date: new Date().getTime(),
-            status: false
+            status: false,
+            Carte_grise: false,
+            Assurance:  false,
+            Vignette: false,
+                    Controle_technique: false,
+                    Permis_de_Circuler: false,
+                    Autorisation_transport_marchandises: false,
+                    Autorisation_transport_produits_Dangereux: false,
+                    Etiquettage: false,
+                    Assurance_marchandises: false,
+                    Registre_de_commerce: false,
+                    Carte_rouge: false,
+                    Permis_de_conduire: false,
         });
 
         console.log("insert transp")

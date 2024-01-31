@@ -405,17 +405,19 @@ function ClientPage({ setShowClinetDetails,setSelectedClientDetail, setChoiceTra
                             <div className="filter-options"
                                 onClick={() => {
 
-                                    const arr = selectedField.map(function (item, index) {
-                                        if (index === 0) {
-                                            item = !item;
-                                        }
-                                        return item;
-                                    })
-
-                                    setSelectedField(arr)
-
-                                    console.log(selectedField)
-                                    console.log(selectedField[0])
+                                    if(showSelectOption1){
+                                        const arr = selectedField.map(function (item, index) {
+                                            if (index === 0) {
+                                                item = !item;
+                                            }
+                                            return item;
+                                        })
+    
+                                        setSelectedField(arr)
+    
+                                        console.log(selectedField)
+                                        console.log(selectedField[0])
+                                    }
 
                                 }}
                             >
@@ -434,7 +436,8 @@ function ClientPage({ setShowClinetDetails,setSelectedClientDetail, setChoiceTra
                                     hide
                             </motion.p>
                             </div>
-                            <div className="filter-options"
+                            <motion.div className="filter-options"
+                            animate={showSelectOption1 ? {display:"flex"} : {display:"none"}}
 
                                 onClick={() => {
 
@@ -465,8 +468,10 @@ function ClientPage({ setShowClinetDetails,setSelectedClientDetail, setChoiceTra
                                 >
                                     hide
                             </motion.p>
-                            </div>
-                            <div className="filter-options"
+                            </motion.div>
+                            <motion.div className="filter-options"
+                            animate={showSelectOption1 ? {display:"flex"} : {display:"none"}}
+
                                 onClick={() => {
 
                                     const arr = selectedField.map(function (item, index) {
@@ -483,7 +488,7 @@ function ClientPage({ setShowClinetDetails,setSelectedClientDetail, setChoiceTra
 
                                 }}
                             >
-                                <p>Date</p>
+                                <p>Phone</p>
                                 <motion.p
                                     className="select-text-action"
                                     animate={!selectedField[2] ? { opacity: 1 } : { opacity: 0 }}
@@ -497,8 +502,10 @@ function ClientPage({ setShowClinetDetails,setSelectedClientDetail, setChoiceTra
                                 >
                                     hide
                             </motion.p>
-                            </div>
-                            <div className="filter-options"
+                            </motion.div>
+                            <motion.div className="filter-options"
+                            animate={showSelectOption1 ? {display:"flex"} : {display:"none"}}
+
                                 onClick={() => {
 
                                     const arr = selectedField.map(function (item, index) {
@@ -515,7 +522,7 @@ function ClientPage({ setShowClinetDetails,setSelectedClientDetail, setChoiceTra
 
                                 }}
                             >
-                                <p>From</p>
+                                <p>Company</p>
                                 <motion.p
                                     className="select-text-action"
                                     animate={!selectedField[3] ? { opacity: 1 } : { opacity: 0 }}
@@ -529,8 +536,10 @@ function ClientPage({ setShowClinetDetails,setSelectedClientDetail, setChoiceTra
                                 >
                                     hide
                             </motion.p>
-                            </div>
-                            <div className="filter-options"
+                            </motion.div>
+                            <motion.div className="filter-options"
+                            animate={showSelectOption1 ? {display:"flex"} : {display:"none"}}
+
                                 onClick={() => {
 
                                     const arr = selectedField.map(function (item, index) {
@@ -547,7 +556,7 @@ function ClientPage({ setShowClinetDetails,setSelectedClientDetail, setChoiceTra
 
                                 }}
                             >
-                                <p>To</p>
+                                <p>Business Nature</p>
                                 <motion.p
                                     className="select-text-action"
                                     animate={!selectedField[4] ? { opacity: 1 } : { opacity: 0 }}
@@ -561,8 +570,10 @@ function ClientPage({ setShowClinetDetails,setSelectedClientDetail, setChoiceTra
                                 >
                                     hide
                             </motion.p>
-                            </div>
-                            <div className="filter-options"
+                            </motion.div>
+                            <motion.div className="filter-options"
+                            animate={showSelectOption1 ? {display:"flex"} : {display:"none"}}
+
                                 onClick={() => {
 
                                     const arr = selectedField.map(function (item, index) {
@@ -579,7 +590,7 @@ function ClientPage({ setShowClinetDetails,setSelectedClientDetail, setChoiceTra
 
                                 }}
                             >
-                                <p>paiment</p>
+                                <p>Location</p>
                                 <motion.p
                                     className="select-text-action"
                                     animate={!selectedField[5] ? { opacity: 1 } : { opacity: 0 }}
@@ -593,8 +604,10 @@ function ClientPage({ setShowClinetDetails,setSelectedClientDetail, setChoiceTra
                                 >
                                     hide
                             </motion.p>
-                            </div>
-                            <div className="filter-options"
+                            </motion.div>
+                            <motion.div className="filter-options"
+                            animate={showSelectOption1 ? {display:"flex"} : {display:"none"}}
+
                                 onClick={() => {
 
                                     const arr = selectedField.map(function (item, index) {
@@ -611,7 +624,7 @@ function ClientPage({ setShowClinetDetails,setSelectedClientDetail, setChoiceTra
 
                                 }}
                             >
-                                <p>Price</p>
+                                <p>State</p>
                                 <motion.p
                                     className="select-text-action"
                                     animate={!selectedField[6] ? { opacity: 1 } : { opacity: 0 }}
@@ -625,9 +638,11 @@ function ClientPage({ setShowClinetDetails,setSelectedClientDetail, setChoiceTra
                                 >
                                     hide
                             </motion.p>
-                            </div>
+                            </motion.div>
 
-                            <div className="filter-options"
+                            <motion.div className="filter-options"
+                            animate={showSelectOption1 ? {display:"flex"} : {display:"none"}}
+
 
                                 onClick={() => {
 
@@ -659,7 +674,7 @@ function ClientPage({ setShowClinetDetails,setSelectedClientDetail, setChoiceTra
                                 >
                                     hide
                             </motion.p>
-                            </div>
+                            </motion.div>
                         </motion.div>
                     </div>
                     <div className="filer-components"
@@ -723,23 +738,26 @@ function ClientPage({ setShowClinetDetails,setSelectedClientDetail, setChoiceTra
                         
                         <motion.p
                             initial={{ opacity: 1 }}
-                            animate={selectedField[4] ? { opacity: 1 } : { display: "none", opacity: 0 }}
+                            animate={selectedField[3] ? { opacity: 1 } : { display: "none", opacity: 0 }}
 
                         >Company</motion.p>
                         <motion.p
                             initial={{ opacity: 1 }}
-                            animate={selectedField[5] ? { opacity: 1 } : { display: "none", opacity: 0 }}
+                            animate={selectedField[4] ? { opacity: 1 } : { display: "none", opacity: 0 }}
 
                         >Business Nature</motion.p>
                         <motion.p
                             initial={{ opacity: 1 }}
-                            animate={selectedField[6] ? { opacity: 1 } : { display: "none", opacity: 0 }}
+                            animate={selectedField[5] ? { opacity: 1 } : { display: "none", opacity: 0 }}
 
-                        >location</motion.p>
+                        >Location
+                        
+                        
+                        </motion.p>
 
                         <motion.p
                             initial={{ opacity: 1 }}
-                            animate={selectedField[7] ? { opacity: 1 } : { display: "none", opacity: 0 }}
+                            animate={selectedField[6] ? { opacity: 1 } : { display: "none", opacity: 0 }}
 
                         >State</motion.p>
                     </motion.div>
@@ -766,22 +784,25 @@ function ClientPage({ setShowClinetDetails,setSelectedClientDetail, setChoiceTra
                                             
                                             <motion.p
                                                 initial={{ opacity: 1 }}
-                                                animate={selectedField[4] ? { opacity: 1 } : { display: "none", opacity: 0 }}
+                                                animate={selectedField[3] ? { opacity: 1 } : { display: "none", opacity: 0 }}
 
                                             >{item.company_name}</motion.p>
                                             <motion.p
                                                 initial={{ opacity: 1 }}
-                                                animate={selectedField[5] ? { opacity: 1 } : { display: "none", opacity: 0 }}
+                                                animate={selectedField[4] ? { opacity: 1 } : { display: "none", opacity: 0 }}
 
                                             >{item.business_nature}</motion.p>
                                             <motion.p
+                                            className="ellipsis"
                                                 initial={{ opacity: 1 }}
-                                                animate={selectedField[6] ? { opacity: 1 } : { display: "none", opacity: 0 }}
+                                                animate={selectedField[5] ? { opacity: 1 } : { display: "none", opacity: 0 }}
 
-                                            >{item.location} DA</motion.p>
+                                            >{item.location}
+                                            <motion.div className="mask"></motion.div>
+                                            </motion.p>
                                             <motion.p className="state-container"
                                                 initial={{ opacity: 1 }}
-                                                animate={selectedField[7] ? { opacity: 1 } : { display: "none", opacity: 0 }}
+                                                animate={selectedField[6] ? { opacity: 1 } : { display: "none", opacity: 0 }}
                                             >
                                                 <div className={!item.state ? "stat-circle bkYellow" : "stat-circle bkBlue"} >
                                                     {item.state  ? <p>On</p> : <p>Off</p>}
@@ -801,13 +822,7 @@ function ClientPage({ setShowClinetDetails,setSelectedClientDetail, setChoiceTra
                                             animate={showOrderAction == index? { height: "60px", opacity: 1, transition: { delay: 0 } } : { height: "0", opacity: 0, transition: { delay: 0 } }}
                                         >
 
-                                            <motion.div className="order-action bkBlue"
-                                                initial={{ opacity: 0 }}
-                                                animate={showOrderAction == index? { opacity: 1 } : { opacity: 0 }}
-
-                                            >
-                                                <p>Select Transporter</p>
-                                            </motion.div>
+                                            
                                             <motion.div className="order-action bkRed"
                                                 initial={{ opacity: 0 }}
                                                 animate={showOrderAction == index? { opacity: 1 } : { opacity: 0 }}
@@ -854,22 +869,26 @@ function ClientPage({ setShowClinetDetails,setSelectedClientDetail, setChoiceTra
                                             
                                             <motion.p
                                                 initial={{ opacity: 1 }}
-                                                animate={selectedField[4] ? { opacity: 1 } : { display: "none", opacity: 0 }}
+                                                animate={selectedField[3] ? { opacity: 1 } : { display: "none", opacity: 0 }}
 
                                             >{item.company_name}</motion.p>
                                             <motion.p
                                                 initial={{ opacity: 1 }}
-                                                animate={selectedField[5] ? { opacity: 1 } : { display: "none", opacity: 0 }}
+                                                animate={selectedField[4] ? { opacity: 1 } : { display: "none", opacity: 0 }}
 
                                             >{item.business_nature}</motion.p>
                                             <motion.p
+                                            className="ellipsis"
                                                 initial={{ opacity: 1 }}
-                                                animate={selectedField[6] ? { opacity: 1 } : { display: "none", opacity: 0 }}
+                                                animate={selectedField[5] ? { opacity: 1 } : { display: "none", opacity: 0 }}
 
-                                            >{item.location} DA</motion.p>
+                                            >{item.location}
+                                            
+                                            <motion.div className="mask"></motion.div>
+                                            </motion.p>
                                             <motion.p className="state-container"
                                                 initial={{ opacity: 1 }}
-                                                animate={selectedField[7] ? { opacity: 1 } : { display: "none", opacity: 0 }}
+                                                animate={selectedField[6] ? { opacity: 1 } : { display: "none", opacity: 0 }}
                                             >
                                                 <div className={!item.state ? "stat-circle bkYellow" : "stat-circle bkBlue"} >
                                                     {item.state  ? <p>On</p> : <p>Off</p>}
@@ -889,13 +908,7 @@ function ClientPage({ setShowClinetDetails,setSelectedClientDetail, setChoiceTra
                                             animate={showOrderAction  == index? { height: "60px", opacity: 1, transition: { delay: 0 } } : { height: "0", opacity: 0, transition: { delay: 0 } }}
                                         >
 
-                                            <motion.div className="order-action bkBlue"
-                                                initial={{ opacity: 0 }}
-                                                animate={showOrderAction == index ? { opacity: 1 } : { opacity: 0 }}
-
-                                            >
-                                                <p>Select Transporter</p>
-                                            </motion.div>
+                                            
                                             <motion.div className="order-action bkRed"
                                                 initial={{ opacity: 0 }}
                                                 animate={showOrderAction == index ? { opacity: 1 } : { opacity: 0 }}

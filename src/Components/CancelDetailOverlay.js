@@ -18,6 +18,8 @@ function CancelDetailOverlay({ anime, order, close , cancelOrder }) {
     return(
 
         order != null ?
+
+        
         <motion.div className="select-transporter-overlay"
             initial={{ scale: 0, opacity: 0, display: "none" }}
             animate={anime ? { scale: 1, display: "flex", opacity: 1 } : { scale: 0.5, opacity: 0, transition: { ease: "easeInOut" } }}
@@ -33,7 +35,7 @@ function CancelDetailOverlay({ anime, order, close , cancelOrder }) {
             >
                 <p>Confirmation</p>
                 
-                <p>Do you want to cancel order  <span>{order.id}</span>  ?</p>
+                <p>Do you want to cancel this order  <span>{order.id}</span>  ?</p>
 
                 
                 
@@ -41,11 +43,11 @@ function CancelDetailOverlay({ anime, order, close , cancelOrder }) {
                     <div className="conf-action"
                         onClick={() => {
                             
-                        cancelOrder(order.id);
+                        cancelOrder(order);
                         close()
                         }}
                     >
-                        <p>Confirme</p>
+                        <p>Confirm</p>
                     </div>
                     <div className="conf-action"
                         onClick={() => {

@@ -19,7 +19,7 @@ import DatePicker from "react-datepicker";
 
 
 
-function OrderPage({setShowDelivredOverlay , setShowTranspDetails , showTranspDetails,  setSelectedTranspDetail , selectedTranspDetail , updateOrderView , setUpdateOrderView, setShowCancelDetailOverlay ,choiceTransoporter, setChoiceTransoporter, setShowTransporterInfos , anime, selectOrderTransoprter, setSelectTranspOverlay, showTransporterInfos, setShowOrdersOverlay,setSelectedOrder  }) {
+function OrderPage({setShowDelivredOverlay , setShowTranspDetails , showTranspDetails,  setSelectedTranspDetail , selectedTranspDetail , updateOrderView , setUpdateOrderView, setShowDismissDetailOverlay, setShowCancelDetailOverlay ,choiceTransoporter, setChoiceTransoporter, setShowTransporterInfos , anime, selectOrderTransoprter, setSelectTranspOverlay, showTransporterInfos, setShowOrdersOverlay,setSelectedOrder, setPropAll, setPropFilter, setPropPres }) {
 
 
     const [selectedStateFilter, setSelectedStateFilter] = useState(0);
@@ -43,7 +43,17 @@ function OrderPage({setShowDelivredOverlay , setShowTranspDetails , showTranspDe
     const [selectedOrderToUpdate, setSelectedOrderToUpdate] = useState(null);
     const [showSelectOption2, setShowSelect2] = useState(false);
 
-    
+    useEffect(() => {
+        setPropFilter(filterOrders);
+    }, [filterOrders]);
+
+    useEffect(() => {
+        setPropAll(allOrders);
+    }, [allOrders]);
+
+    useEffect(() => {
+        setPropPres(presAllOrders);
+    }, [presAllOrders]);
 
     const [calandarDate, setCalandarDate] = useState(new Date());
 
@@ -129,18 +139,9 @@ function OrderPage({setShowDelivredOverlay , setShowTranspDetails , showTranspDe
         //must change : store all orders in a var
 
         console.log("getOrdersByDate..........................................")
-       
-        var res = [];
+        console.log(presAllOrders)
         
-        presAllOrders.map((item) => {
-            console.log(item)
-            if (item.date === date) {
-                res.push(item)
-                if(item.state=="c") {
-                    console.log("conf.......")
-                }
-            }
-        })
+        let res = presAllOrders.filter((item) => item.date === date);
 
 
 
@@ -197,13 +198,12 @@ function OrderPage({setShowDelivredOverlay , setShowTranspDetails , showTranspDe
         }
     }
 
-
     const getAllOrders = async () => {
 
         console.log("getting all orders...")
         const db = getDatabase();
         const shipments = ref(db, 'Shipment');
-const snapshot = await get(shipments);
+        const snapshot = await get(shipments);
 
                 const data = snapshot.val();
                 const list = Object.entries(data)
@@ -216,9 +216,13 @@ const snapshot = await get(shipments);
                     console.log(client[1].name);
 
                     console.log(element[1].state)
-                    clientorders.push({ id: element[0], client: client[1].name, client_id: element[1].client_id, date: element[1].time_requested, from: element[1].charging_location, to: element[1].discharging_location, paiment: element[1].payment_method, price: element[1].price, state: element[1].state, weight: element[1].weight, vehicle_type: element[1].vehicle_type, description: element[1].description, size: element[1].size , transporter_id:element[1].transporter_id })
+                    let it = { id: element[0], client: element[1].name, client_id: element[1].client_id, date: element[1].time_requested, from: element[1].charging_location, to: element[1].discharging_location, paiment: element[1].payment_method, price: element[1].price, state: element[1].state, weight: element[1].weight, vehicle_type: element[1].vehicle_type, description: element[1].description, size: element[1].size , transporter_id:element[1].transporter_id , palette_number : element[1].palette_number };
+                    clientorders.push(it)
                     index++;
 
+                    it.setInf = (obj, filtOrd, allOrd, presOrd) => {
+                        updateItem(it, obj, filtOrd, allOrd, presOrd);
+                    }
 
                 });
 
@@ -227,6 +231,20 @@ const snapshot = await get(shipments);
                 setPresAllOrders(clientorders)
            
     }
+
+    const updateItem = (it, obj, filtOrd, allOrd, presOrd) => {
+        console.log(filtOrd);
+        const updatedItems = filtOrd.map((item) => {
+          if (item.id === it.id) {
+            Object.keys(obj).forEach((key, ind) => {
+                item[key] = obj[key];
+            })
+          }
+          return item;
+        });
+        console.log(updatedItems);
+        setFilterOrders(updatedItems);
+      };
 
     const getClientById = async (id) => {
 
@@ -271,17 +289,10 @@ const snapshot = await get(shipments);
     }
 
 
-    useEffect(()=> {
-        
+    useEffect(() => {
         setUpdateOrderView(false);
         getAllOrders();
-        
-        getOrdersByDate()
-
-
-
     },[updateOrderView ])
-
 
     useEffect(()=> {
 
@@ -299,13 +310,6 @@ const snapshot = await get(shipments);
                 setShowSelect2(false)
 
             }
-
-            
-
-
-
-
-
 
         });
     },[])
@@ -378,7 +382,7 @@ const snapshot = await get(shipments);
                                     >
 
                                     </motion.div>
-                                    <p>Delivred</p>
+                                    <p>Delivered</p>
                                 </div>
 
                                 <div onClick={() => {
@@ -394,44 +398,62 @@ const snapshot = await get(shipments);
                                     </motion.div>
                                     <p>Canceled</p>
                                 </div>
-                            </div>
+
+                                <div onClick={() => {
+                                    setSelectedStateFilter(6);
+                                    filterByState("oos");
+                                }}>
+                                    <p>Our-of-Service</p>
+                                    <motion.div
+                                        className="selected-order-filter"
+                                        initial={{ width: "100%" }}
+                                        animate={selectedStateFilter == 6 ? { width: "100%" } : { width: 0 }}
+                                    >
+
+                                    </motion.div>
+                                </div>
+                            </div>                           
 
                             <div className="filters-container">
                                 <div className="filer-components"
                                     onClick={()=> {
                                         
-                                        setShowSelect1(true)
+                                        setShowSelect1(true);
                                     }}
-
-                                    
                                 >
-                                    <p>Custumize</p>
+                                    <div class='customize'>
+                                        <p>Customize</p>
+                                    </div>
 
                                     <motion.div 
                                     id="select-option"
                                     className="filter-select"
                                     initial={{opacity : 0 , top : "50%"}}
-                                    animate={showSelectOption1 ? { opacity: 1, top: "120%", transition: { ease: "backInOut" } } : { opacity: 0, top: "50%", transition: { ease: "backInOut" }}}
+                                    animate={showSelectOption1 ? { opacity: 1, top: "120%", transition: { ease: "backInOut" } } : {  opacity: 0, top: "50%", transition: { ease: "backInOut" }}}
                                     
                                     >
-                                        <div className="filter-options"
-                                            onClick={() => {
+                                        <motion.div className="filter-options"
+
+                                             onClick={() => {
                                                 
-                                                const arr = selectedField.map(function (item, index) {
-                                                    if (index === 0) {
-                                                        item = !item;
-                                                    }
-                                                    return item;
-                                                })
-
-                                                setSelectedField(arr)
-
-                                                console.log(selectedField)
-                                                console.log(selectedField[0])
+                                                if(showSelectOption1){
+                                                    const arr = selectedField.map(function (item, index) {
+                                                        if (index === 0) {
+                                                            item = !item;
+                                                        }
+                                                        return item;
+                                                    })
+    
+                                                    setSelectedField(arr)
+    
+                                                    console.log(selectedField)
+                                                    console.log(selectedField[0])
+                                                }
+                                                
 
                                             }}
                                         >
-                                            <p>id</p>
+                                            <p>ID</p>
                                             <motion.p 
                                                 className="select-text-action"
                                                 animate={!selectedField[0] ? { opacity: 1 } : { opacity: 0}}
@@ -445,9 +467,12 @@ const snapshot = await get(shipments);
                                             >
                                                 hide
                                             </motion.p>
-                                        </div>
-                                        <div className="filter-options"
-                                        
+                                        </motion.div>
+
+
+                                         <motion.div className="filter-options"
+
+                                            
                                             onClick={() => {
 
                                                 const arr = selectedField.map(function (item,index) {
@@ -463,7 +488,7 @@ const snapshot = await get(shipments);
 
                                             }}
                                         >
-                                            <p>client</p>
+                                            <p>Client</p>
                                             <motion.p
                                                 className="select-text-action"
                                                 animate={!selectedField[1] ? { opacity: 1 } : { opacity: 0 }}
@@ -477,8 +502,12 @@ const snapshot = await get(shipments);
                                             >
                                                 hide
                                             </motion.p>
-                                        </div>
-                                        <div className="filter-options"
+                                        </motion.div>
+                                        
+                                        <motion.div className="filter-options"
+
+                                            animate={showSelectOption1 ? {display:"flex"}:{display:"none"}}
+
                                             onClick={() => {
 
                                                 const arr = selectedField.map(function (item, index) {
@@ -509,8 +538,12 @@ const snapshot = await get(shipments);
                                             >
                                                 hide
                                             </motion.p>
-                                        </div>
-                                        <div className="filter-options"
+                                        </motion.div>
+
+
+                                         <motion.div className="filter-options"
+
+                                            animate={showSelectOption1 ? {display:"flex"}:{display:"none"}}
                                             onClick={() => {
 
                                                 const arr = selectedField.map(function (item, index) {
@@ -541,9 +574,11 @@ const snapshot = await get(shipments);
                                             >
                                                 hide
                                             </motion.p>
-                                        </div>
-                                        <div className="filter-options"
-                                            onClick={() => {
+                                        </motion.div>
+                                        <motion.div className="filter-options"
+
+                                            animate={showSelectOption1 ? {display:"flex"}:{display:"none"}}
+                                            onClick={(event) => {
 
                                                 const arr = selectedField.map(function (item, index) {
                                                     if (index === 4) {
@@ -573,8 +608,10 @@ const snapshot = await get(shipments);
                                             >
                                                 hide
                                             </motion.p>
-                                        </div>
-                                        <div className="filter-options"
+                                        </motion.div>
+                                        <motion.div className="filter-options"
+
+                                            animate={showSelectOption1 ? {display:"flex"}:{display:"none"}}
                                             onClick={() => {
 
                                                 const arr = selectedField.map(function (item, index) {
@@ -591,7 +628,7 @@ const snapshot = await get(shipments);
 
                                             }}
                                         >
-                                            <p>paiment</p>
+                                            <p>Payment</p>
                                             <motion.p
                                                 className="select-text-action"
                                                 animate={!selectedField[5] ? { opacity: 1 } : { opacity: 0 }}
@@ -605,8 +642,10 @@ const snapshot = await get(shipments);
                                             >
                                                 hide
                                             </motion.p>
-                                        </div>
-                                        <div className="filter-options"
+                                        </motion.div>
+                                        <motion.div className="filter-options"
+
+                                            animate={showSelectOption1 ? {display:"flex"}:{display:"none"}}
                                             onClick={() => {
 
                                                 const arr = selectedField.map(function (item, index) {
@@ -637,10 +676,12 @@ const snapshot = await get(shipments);
                                             >
                                                 hide
                                             </motion.p>
-                                        </div>
+                                        </motion.div>
 
-                                        <div className="filter-options"
-                                        
+                                        <motion.div className="filter-options"
+
+                                            animate={showSelectOption1 ? {display:"flex"}:{display:"none"}}
+
                                             onClick={() => {
 
                                                 const arr = selectedField.map(function (item, index) {
@@ -671,7 +712,7 @@ const snapshot = await get(shipments);
                                             >
                                                 hide
                                             </motion.p>
-                                        </div>
+                                        </motion.div>
                                     </motion.div>
                                 </div>
                                 <div className="filer-components"
@@ -744,7 +785,7 @@ const snapshot = await get(shipments);
                                         initial={{ opacity: 1 }}
                                         animate={selectedField[5] ? { opacity: 1 } : { display: "none", opacity: 0 }}
 
-                                    >Paiment</motion.p>
+                                    >Payment</motion.p>
                                     <motion.p
                                         initial={{ opacity: 1 }}
                                         animate={selectedField[6] ? { opacity: 1 } : { display: "none", opacity: 0 }}
@@ -778,6 +819,7 @@ const snapshot = await get(shipments);
 
                                                     >{item.date}</motion.p>
                                                     <motion.p
+                                                        className="ellipsis"
                                                         initial={{ opacity: 1 }}
                                                         animate={selectedField[3] ? { opacity: 1 } : { display: "none", opacity: 0 }}
 
@@ -801,8 +843,8 @@ const snapshot = await get(shipments);
                                                         initial={{ opacity: 1 }}
                                                         animate={selectedField[7] ? { opacity: 1 } : { display: "none", opacity: 0 }}
                                                     >
-                                                        <div className={item.state === "w" ? "stat-circle bkYellow" :item.state === "c" ? "stat-circle bkBlue" :item.state === "d"? "stat-circle bkgreen" : "stat-circle bkred"} >
-                                                            {item.state === "w" ? <p>W</p> : <p>{item.state}</p>}
+                                                        <div className={item.state === "w" ? "stat-circle bkYellow" :item.state === "c" ? "stat-circle bkBlue" :item.state === "d"? "stat-circle bkgreen" :item.state === "oos" ? "stat-circle bkOrange" : "stat-circle bkred"} >
+                                                            {<p>{item.state}</p>}
                                                         </div>
                                                     </motion.p>
                                                     <div className="action"
@@ -841,6 +883,18 @@ const snapshot = await get(shipments);
                                                     >
                                                         <p>More details</p>
                                                     </motion.div>
+
+                                                    <motion.div className="order-action bkOrange"
+                                                        initial={{ opacity: 0 }}
+                                                        animate={showOrderAction == index ? { opacity: 1 } : { opacity: 0 }}
+                                                        onClick={()=> {
+                                                            setSelectedOrder(item)
+                                                            setShowDismissDetailOverlay(true);
+                                                        }}
+                                                    >
+                                                        <p>Set as Out-of-Service</p>
+                                                    </motion.div>
+
                                                     <motion.div className="order-action bkYellow"
                                                         initial={{ opacity: 0 }}
                                                         animate={showOrderAction == index ? { opacity: 1 } : { opacity: 0 }}
@@ -858,10 +912,10 @@ const snapshot = await get(shipments);
                                                         onClick={()=> {
                                                             setSelectedOrder(item)
                                                             setShowDelivredOverlay(true);
-                                                            console.log("Delivred click")
+                                                            console.log("Delivered click")
                                                         }}
                                                     >
-                                                        <p>Delivred</p>
+                                                        <p>Delivered</p>
                                                     </motion.div>
 
                                                 </motion.div>
@@ -891,15 +945,32 @@ const snapshot = await get(shipments);
 
                                                     >{item.date}</motion.p>
                                                     <motion.p
+                                                    
+                                                    className="ellipsis"
                                                         initial={{ opacity: 1 }}
                                                         animate={selectedField[3] ? { opacity: 1 } : { display: "none", opacity: 0 }}
 
-                                                    >{item.from}</motion.p>
+                                                    >{item.from} 
+                                                        <motion.div className="mask">
+                                                    
+                                                    
+                                                        
+                                                        </motion.div>
+                                                    </motion.p>
                                                     <motion.p
+                                                    
+                                                    className="ellipsis"
                                                         initial={{ opacity: 1 }}
                                                         animate={selectedField[4] ? { opacity: 1 } : { display: "none", opacity: 0 }}
 
-                                                    >{item.to}</motion.p>
+                                                    >{item.to}
+                                                    
+                                                    <motion.div className="mask">
+                                                    
+                                                    
+                                                        
+                                                        </motion.div>
+                                                        </motion.p>
                                                     <motion.p
                                                         initial={{ opacity: 1 }}
                                                         animate={selectedField[5] ? { opacity: 1 } : { display: "none", opacity: 0 }}
@@ -914,8 +985,8 @@ const snapshot = await get(shipments);
                                                         initial={{ opacity: 1 }}
                                                         animate={selectedField[7] ? { opacity: 1 } : { display: "none", opacity: 0 }}
                                                     >
-                                                        <div className={item.state === "w" ? "stat-circle bkYellow" :item.state === "c" ? "stat-circle bkBlue" :item.state === "d"? "stat-circle bkgreen" : "stat-circle bkred"} >
-                                                            {item.state === "w" ? <p>W</p> : <p>{item.state}</p>}
+                                                        <div className={item.state === "w" ? "stat-circle bkYellow" :item.state === "c" ? "stat-circle bkBlue" :item.state === "d"? "stat-circle bkgreen" :item.state === "oos" ? "stat-circle bkOrange" : "stat-circle bkred"} >
+                                                            {<p>{item.state}</p>}
                                                         </div>
                                                     </motion.p>
                                                     <div className="action"
@@ -952,9 +1023,19 @@ const snapshot = await get(shipments);
                                                         }}
 
                                                     >
-                                                        <p>More details</p>
+                                                        <p>More Details</p>
                                                     </motion.div>
-                                                    <motion.div className="order-action bkYellow"
+                                                    <motion.div className="order-action bkOrange"
+                                                        initial={{ opacity: 0 }}
+                                                        animate={showOrderAction == index ? { opacity: 1 } : { opacity: 0 }}
+                                                        onClick={()=> {
+                                                            setSelectedOrder(item)
+                                                            setShowDismissDetailOverlay(true);
+                                                        }}
+                                                    >
+                                                        <p>Set as Out-of-Service</p>
+                                                    </motion.div>
+                                                    <motion.div className="order-action bkred"
                                                         initial={{ opacity: 0 }}
                                                         animate={showOrderAction == index ? { opacity: 1 } : { opacity: 0 }}
                                                         onClick={()=> {
@@ -974,7 +1055,7 @@ const snapshot = await get(shipments);
                                                             console.log("ddd")
                                                         }}
                                                     >
-                                                        <p>Delivred</p>
+                                                        <p>Delivered</p>
                                                     </motion.div>
                                                 </motion.div>
                                             </div>
@@ -1144,7 +1225,7 @@ const snapshot = await get(shipments);
                                     <motion.div className="filer-components"
                                         animate={choiceTransoporter.length != 0 ? { backgroundColor: "#362FD9", color: "white" } : { backgroundColor : "transparent" , color:"black"}}
                                     >
-                                        <p>Filtred</p>
+                                        <p>Filtered</p>
                                     </motion.div>
                                 </div>
                                 
@@ -1164,7 +1245,7 @@ const snapshot = await get(shipments);
 
                                                            <div className="transporter-text">
                                                                <p>{item.name}</p>
-                                                               <p className="small-text">Korssa Transporter</p>
+                                                               <p className="small-text">Korsaa Transporter</p>
                                                            </div>
                                                        </div>
 
@@ -1194,7 +1275,7 @@ const snapshot = await get(shipments);
                                                             setSelectedTranspDetail(item)
                                                            }}
                                                        >
-                                                           <p>More Infos</p>
+                                                           <p>More Info</p>
                                                            
                                                        </motion.div>
 
@@ -1258,7 +1339,7 @@ const snapshot = await get(shipments);
                                                             setSelectedTranspDetail(item)
                                                                 }}
                                                             >
-                                                                <p>More Infos</p>
+                                                                <p>More Info</p>
 
                                                             </motion.div>
 

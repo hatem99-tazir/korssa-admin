@@ -6,6 +6,8 @@ import React, { useState, useEffect } from 'react';
 
 import exit from "../asstes/dashboard/exit.png"
 import loadingIcon from "../asstes/loadingIconBlue.gif"
+import legal from "../asstes/dashboard/legal.png"
+
 import { getDatabase, ref, set, push, get, update } from "firebase/database";
 
 
@@ -72,7 +74,7 @@ function TranspDetails({setShowtranspPapers , transp , visible , close , setShow
 
         setTimeout(() => {
             setloading(false)
-        }, 3000)
+        }, 1000)
     } , [])
 
     return (
@@ -125,7 +127,7 @@ function TranspDetails({setShowtranspPapers , transp , visible , close , setShow
                         }}
                     >
                         <p >Legalisation</p>
-                        <img src={exit} alt="" />
+                        <img src={legal} width ="24" height="24" alt="" />
                     </div>
 
                 </div>

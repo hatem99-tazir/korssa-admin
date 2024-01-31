@@ -529,13 +529,7 @@ function StatPage({ setShowClinetDetails,setSelectedClientDetail, setChoiceTrans
 
 
                                 <div className="dash-home-top-right">
-                                    <div className="rech-container">
-
-                                    </div>
-
-                                    <div className="user-circle">
-
-                                    </div>
+                                    
                                 </div>
                             </div>
                             <div className="dash-home-center">

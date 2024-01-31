@@ -41,11 +41,11 @@ function DelivredOverlay({ anime, order, close , cancelOrder }) {
                     <div className="conf-action"
                         onClick={() => {
                             
-                        cancelOrder(order.id);
+                        cancelOrder(order);
                         close()
                         }}
                     >
-                        <p>Confirme</p>
+                        <p>Confirm</p>
                     </div>
                     <div className="conf-action"
                         onClick={() => {

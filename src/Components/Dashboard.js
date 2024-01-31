@@ -18,11 +18,17 @@ import client from "../asstes/dashboard/client.png"
 import order from "../asstes/dashboard/order.png"
 
 
+import logo from "../asstes/logo.png"
+
+
 
 import emailjs from '@emailjs/browser';
 
 
 import CancelDetailOverlay from "../Components/CancelDetailOverlay"
+
+import DismissDetailOverlay from "../Components/DismissDetailOverlay"
+
 import TransporterForm from "../Components/transporter_form"
 
 import OrderDetails from "../Components/orderDetails"
@@ -44,11 +50,6 @@ import DelivredOverlay from "./DelivredOverlay";
 import TranspPapers from "./TranspPapers";
 
 function Dasboard() {
-
-    const navigate = useNavigate();
-    const location = useLocation();
-
-
     const [page1, setPage1] = useState(false);
     const [page2, setPage2] = useState(false);
     const [page3, setPage3] = useState(false);
@@ -58,7 +59,6 @@ function Dasboard() {
 
     const [loading, setLoading] = useState(true);
 
-    const [showOrderAction, setShowOrderAction] = useState(-1);
     const [showTransporterInfos, setShowTransporterInfos] = useState(false);
 
     const [showOrdersOverlay, setShowOrdersOverlay] = useState(false);
@@ -70,26 +70,18 @@ function Dasboard() {
     const [showSelectOption2, setShowSelect2] = useState(false);
 
 
-    const initSelected = [true, true, true, true, true, true, true, true];
-    const [selectedField, setSelectedField] = useState(initSelected);
-
-
-    
-    const [presAllOrders, setPresAllOrders] = useState([]);
-
-    const [choiceTransoporter, setChoiceTransoporter] = useState([]);
-    
-
-
     const [allOrders, setAllOrders] = useState([]);
     const [filterOrders, setFilterOrders] = useState([]);
+    const [presOrders, setPresOrders] = useState([]);
+    
+
+
+    const [choiceTransoporter, setChoiceTransoporter] = useState([]);
 
     const [allClient, setAllClient] = useState([]);
-    const [filterClinet, setFilterClinet] = useState([]);
     
 
     const [allTransporters, setAllTransporters] = useState([]);
-    const [filteTransporters, setFilterTransporters] = useState([]);
 
 
 
@@ -99,29 +91,17 @@ function Dasboard() {
     const [selectedTransp, setSelectedTransp] = useState(null);
 
     
-
-    
     const [showtranspPapers, setShowtranspPapers] = useState(false);
 
 
     const [selectedOrderToUpdate, setSelectedOrderToUpdate] = useState(null);
-
-    const [selectedDateAnim, setSelectedDateAnim] = useState(6);
-    
-
-    
-
-    const [selectedStateFilter, setSelectedStateFilter] = useState(0);
-
     
     const [showCancelDetailOverlay, setShowCancelDetailOverlay] = useState(false);
 
+    const [showDelivredOverlay, setShowDelivredOverlay] = useState(false);    
     
-    const [showDelivredOverlay, setShowDelivredOverlay] = useState(false);
+    const [showDismissDetailOverlay, setShowDismissDetailOverlay] = useState(false);
 
-
-    
-    
 
 
     //stats 
@@ -154,6 +134,19 @@ function Dasboard() {
 
     
     const [updateTranspView, setUpdateTranspView] = useState(false);
+
+
+
+    
+
+    const navigate = useNavigate();
+    const location = useLocation();
+    
+    const [showLogOutOverlay, setShowLogOutOverlay] = useState(false);
+
+    const logoutHandler = ()=> {
+        navigate('/');
+    }
     
 
 
@@ -161,50 +154,6 @@ function Dasboard() {
 
     //confimration pop ups
     const [selectTranspOverlay, setSelectTranspOverlay] = useState(false);
-
-
-
-    const filterByState = (filter)=> {
-
-        var filterRes = [];
-        if(filter == "a") {
-            setFilterOrders(allOrders);
-        }else{
-
-            allOrders.map((item)=> {
-                if(item.state === filter) {
-                    filterRes.push(item);
-                }
-            })
-
-            setFilterOrders(filterRes);
-        }
-    }
-
-    const filterByStatus = (filter) => {
-
-        var filterRes = [];
-        if (filter == "a") {
-            setFilterTransporters(allTransporters);
-        } else {
-
-            allTransporters.map((item) => {
-                if (item.state === filter) {
-                    filterRes.push(item);
-                }
-            })
-
-            setFilterTransporters(filterRes);
-        }
-    }
-
-
-    const getPrevDate = (i)=> {
-        var date = new Date();
-        date.setDate(date.getDate() - i);
-        var res = { day: date.toString().split(" ")[0],date: date.toString().split(" ")[2] };
-        return res;
-    }
 
     const formatDate = (date)=> {
 
@@ -214,71 +163,6 @@ function Dasboard() {
 
         var res = dd + '/' + mm + '/' + yyyy;
         return res;
-    } 
-    //sort 
-
-    function compare(a, b) {
-        if (a.price < b.price) {
-            console.log("cc")
-            return 1;
-        }
-        if (a.price > b.price) {
-            return -1;
-        }
-        return 0;
-    }
-
-    function compareName(a, b) {
-        console.log("compareName")
-        if (a.client < b.client) {
-            console.log("cc")
-            return -1;
-        }
-        if (a.client > b.client) {
-            console.log("cc")
-            return 1;
-        }
-        return 0;
-    }
-
-    const sortBy = (list , prop)=>{
-        var res = [];
-        if(list === "orders"){
-            console.log("sort by")
-            if(prop === "name"){
-                res = filterOrders;
-                res.sort(compareName)
-                console.log("name")
-                setFilterOrders(res);
-            }else{
-
-                res = filterOrders; 
-                res.sort(compare)
-                console.log("price")
-                setFilterOrders(res);
-            }
-        }else{
-            if(list === "clients"){
-
-            }else {
-
-            }
-        }
-
-    }
-
-
-    const filterTransoprterOnSelect = (payment, from )=> {
-        console.log(payment + " " + from)
-
-        var res = []
-        allTransporters.map((item) => {
-            if(item.payment_method == payment && item.city == from) {
-                res.push(item)
-            }
-        })
-
-        setChoiceTransoporter(res);
     }
 
     const selectOrderTransoprter = (item) => {
@@ -288,8 +172,8 @@ function Dasboard() {
     }
 
 
-    async function confirmOrder(shipmentID, transporterID) {
-
+    async function confirmOrder(order, transporterID) {
+        let shipmentID = order.id;
 
         console.log(selectedTransp.email);
 
@@ -332,11 +216,39 @@ function Dasboard() {
 
                 emailjs.send("service_b6v0zjq","template_6lq2fnq",client_params);
 
-        return update(id, data);
+            
+        try {
+            await update(id, data);
+            order.setInf({state: 'c', transporter_id: transporterID}, filterOrders, allOrders, presOrders)
+        }catch(x) {
+            console.log(x);
+        }
 
     }
 
-    function cancelOrder(shipmentID) {
+    async function dismissOrder(order) {
+        let shipmentID = order.id;
+
+        const db = getDatabase();
+
+        const data = {
+            time_dismissed: formatDate(new Date()),
+            state : "oos"
+        };
+
+        const id = ref(db, 'Shipment/' + shipmentID);
+
+        try {
+            await update(id, data);
+            order.setInf({state: 'oos'}, filterOrders, allOrders, presOrders)
+        }catch(x) {
+            console.log(x);
+        }
+
+    }
+
+    async function cancelOrder(order) {
+        let shipmentID = order.id;
 
         const db = getDatabase();
 
@@ -347,17 +259,20 @@ function Dasboard() {
 
         const id = ref(db, 'Shipment/' + shipmentID);
 
-
-
-        setUpdateOrderView(true)
-        return update(id, data);
+        console.log("cancelling order " + shipmentID);
+        try {
+            await update(id, data);
+            order.setInf({state:'cn'}, filterOrders, allOrders, presOrders);
+        }catch(x) {//ignore
+            console.log(x);
+        }
 
     }
 
 
     
-    function deliverOrder(shipmentID) {
-
+    async function deliverOrder(order) {
+        let shipmentID = order.id;
         const db = getDatabase();
 
         const data = {
@@ -369,8 +284,14 @@ function Dasboard() {
 
 
 
-        setUpdateOrderView(true)
-        return update(id, data);
+        try {
+            await update(id, data);
+            order.setInf({state:'d'}, filterOrders, allOrders, presOrders);
+        }catch(x) {//ignore
+            console.log(x);
+        }
+
+
 
     }
 
@@ -393,56 +314,6 @@ function Dasboard() {
         }
 
         return "cc";
-    }
-    const getOrdersByDate = (date)=> {
-        //must change : store all orders in a var
-        
-        console.log("getOrdersByDate.....")
-        console.log(date)
-        var res = [];
-        presAllOrders.map((item)=> {
-            console.log(item)
-            if(item.date === date) {
-                res.push(item)
-            }
-        })
-
-        setAllOrders(res)
-        setFilterOrders(res)
-
-
-
-
-    }
-
-
-    const getAllOrders =  () => {
-
-        console.log("getting all orders...")
-        const db = getDatabase();
-        const shipments = ref(db, 'Shipment');
-
-        get(shipments)
-            .then((snapshot) => {
-                const data = snapshot.val();
-                const list = Object.entries(data)
-                var clientorders = [];
-                var index = 1;
-
-                list.forEach(async element => {
-
-                    var client = await getClientById(element[1].client_id);
-                    console.log(client[1].name);
-
-                    clientorders.push({ id: element[0], client: client[1].name, client_id: element[1].client_id, date: element[1].time_requested, from: element[1].charging_location, to: element[1].discharging_location, paiment: element[1].payment_method, price: element[1].price, state: element[1].state, weight: element[1].weight, vehicle_type: element[1].vehicle_type, description: element[1].description, size: element[1].size })
-                    index++;
-                   
-                    
-                });
-
-                setAllOrders(clientorders)
-                setPresAllOrders(clientorders)
-            })
     }
 
 
@@ -523,7 +394,6 @@ function Dasboard() {
                 
         });
 
-        getAllOrders()
         getAllClient()
         getAllTransporter()
         setTimeout(()=> {
@@ -679,7 +549,10 @@ function Dasboard() {
                         </motion.div>
                      </div>
 
-                    <div className="nav-item last-nav-item">
+                    <div className="nav-item last-nav-item" onClick={()=> {
+                        setShowLogOutOverlay(true);
+                    }}>
+
                         <img src={logout} alt="" />
                         <motion.div
                             className="selected-background"
@@ -709,7 +582,7 @@ function Dasboard() {
                     }
                     {
                         page2 ? 
-                            <OrderPage setShowDelivredOverlay={setShowDelivredOverlay} showTranspDetails={showTranspDetails} setShowTranspDetails={setShowTranspDetails} updateOrderView={updateOrderView} setUpdateOrderView={setUpdateOrderView} setShowCancelDetailOverlay={setShowCancelDetailOverlay} setSelectedOrder={setSelectedOrder} choiceTransoporter={choiceTransoporter} setChoiceTransoporter={setChoiceTransoporter} setShowTransporterInfos={setShowTransporterInfos} setShowOrdersOverlay={setShowOrdersOverlay}  showTransporterInfos={showTransporterInfos} anime={page2} selectOrderTransoprter={selectOrderTransoprter} selectedOrderToUpdate={selectedOrderToUpdate} setSelectTranspOverlay={setSelectTranspOverlay} selectedTranspDetail={selectedTranspDetail} setSelectedTranspDetail={setSelectedTranspDetail}/>
+                            <OrderPage setShowDelivredOverlay={setShowDelivredOverlay} showTranspDetails={showTranspDetails} setShowTranspDetails={setShowTranspDetails} updateOrderView={updateOrderView} setUpdateOrderView={setUpdateOrderView} setShowDismissDetailOverlay={setShowDismissDetailOverlay} setShowCancelDetailOverlay={setShowCancelDetailOverlay} setSelectedOrder={setSelectedOrder} choiceTransoporter={choiceTransoporter} setChoiceTransoporter={setChoiceTransoporter} setShowTransporterInfos={setShowTransporterInfos} setShowOrdersOverlay={setShowOrdersOverlay}  showTransporterInfos={showTransporterInfos} anime={page2} selectOrderTransoprter={selectOrderTransoprter} selectedOrderToUpdate={selectedOrderToUpdate} setSelectTranspOverlay={setSelectTranspOverlay} selectedTranspDetail={selectedTranspDetail} setSelectedTranspDetail={setSelectedTranspDetail} setPropFilter={setFilterOrders} setPropAll={setAllOrders} setPropPres={setPresOrders}/>
                         :
                         null
                     }
@@ -748,6 +621,14 @@ function Dasboard() {
                     
                 </div>
             </div>
+
+            <motion.div className="dashboard-resposnive"
+            
+            >
+
+                <img src={logo} alt="" />
+                <p>Korsaa Admin Panel Is Available Only On Bigger Screens !</p>
+            </motion.div>
 
             {
                 showOrdersOverlay ?
@@ -813,14 +694,49 @@ function Dasboard() {
             }
 
 {
+                showDismissDetailOverlay?
+                    <DismissDetailOverlay order={selectedOrder} anime={showDismissDetailOverlay} close={() => { setShowDismissDetailOverlay(false); }}  dismissOrder={dismissOrder} />
+                :
+                null
+            }
+
+{
                 showDelivredOverlay?
                     <DelivredOverlay order={selectedOrder} anime={showDelivredOverlay} close={() => { setShowDelivredOverlay(false); }}  cancelOrder={deliverOrder} />
                 :
                 null
             }
+
+            
+<motion.div 
+                className="select-transporter-overlay overlay max-width max-height flex-column bold align-center justify-center confirme-overlay"
+                initial={{ opacity: 0 , display: "none"}}
+                animate={showLogOutOverlay ? { opacity: 1, display: "flex" } : { opacity: 0 }}
+            >
+
+                <div 
+                id="logout-conf"
+                className="logout-conf white-back flex flex-column align-center justify-center">
+                    <p>Do you want to logout ?</p>
+
+                        <div className="logout-actions flex bold align-center justify-center margin-top20">
+                        <div className="btn flex orange-back align-center justify-center"
+                        onClick={()=> {
+                            logoutHandler()
+                        }}
+                        
+                        >Yes</div>
+                        <div className="btn flex  align-center justify-center cancel-action"
+                            onClick={() => {
+                                setShowLogOutOverlay(false)
+                            }}
+                        >Cancel</div>
+                    </div>
+                </div>
+            </motion.div>
             
             
-            <SelectTranspConf selectTranspOverlay={selectTranspOverlay} setSelectTranspOverlay={setSelectTranspOverlay} transp={selectedTransp} order={selectedOrder} confirmOrder={confirmOrder} updateView={getAllOrders} />
+            <SelectTranspConf selectTranspOverlay={selectTranspOverlay} setSelectTranspOverlay={setSelectTranspOverlay} transp={selectedTransp} order={selectedOrder} confirmOrder={confirmOrder} />
         </motion.div>
     );
 }
